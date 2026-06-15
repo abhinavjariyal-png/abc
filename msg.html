@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>starlight tulips · extra stems & large grass</title>
+    <title>starlight tulips · enchanted ground</title>
     <style>
         *,
         *::before,
@@ -154,7 +154,7 @@
         .flower__line__leaf--5 { top: 0; transform-origin: left; transform: rotate(70deg) rotateY(30deg) scale(0.6); animation: blooming-leaf-right var(--fl-speed) 1.8s backwards; }
         .flower__line__leaf--6 { top: -2%; left: -450%; transform-origin: right; transform: rotate(-70deg) rotateY(30deg) scale(0.6); animation: blooming-leaf-left var(--fl-speed) 2s backwards; }
 
-        /* NEW: additional standalone stem+leaf structures (no flower) */
+        /* additional standalone stem+leaf structures (no flower) */
         .extra-stem {
             position: absolute;
             bottom: 0;
@@ -191,7 +191,7 @@
             100% { height: 18vmin; opacity: 1; transform: scaleY(1); }
         }
 
-        /* floating light particles (unchanged) */
+        /* floating light particles */
         .flower__light {
             position: absolute;
             bottom: 0vmin;
@@ -205,7 +205,7 @@
         }
         .flower__light:nth-child(odd) { background-color: #ff7da2; }
 
-        /* tulip petals (unchanged) */
+        /* tulip petals */
         .tulip-petal {
             position: absolute;
             bottom: 100%;
@@ -282,7 +282,7 @@
 
         .soil-line {
             position: absolute;
-            bottom:20%;
+            bottom: auto;
             height: 6px;
             background: linear-gradient(90deg, #f9f3e0, #ffffff, #fff5e6);
             box-shadow: 0 0 22px 6px rgba(255, 245, 200, 0.9), 0 0 8px 2px #ffe6aa;
@@ -331,11 +331,11 @@
         /* ========== ENLARGED SVG GRASS – MORE INDIVIDUAL, LARGER ========== */
         .grass-container {
             position: absolute;
-            bottom: -2vmin;          /* overlaps soil line */
+            bottom: -2vmin;
             left: 50%;
             transform: translateX(-50%);
-            width: 36vmin;           /* wider spread */
-            height: 24vmin;          /* taller grass area */
+            width: 36vmin;
+            height: 24vmin;
             pointer-events: none;
             z-index: 7;
         }
@@ -362,7 +362,7 @@
 <div class="title">✦ The Garden Of Wishes ✦</div>
 
 <div class="flowers">
-    <!-- ==================== TULIP 1 (left) ==================== -->
+    <!-- TULIP 1 (left) -->
     <div class="flower flower--1">
         <div class="flower__line">
             <div class="flower__line__leaf flower__line__leaf--1"></div>
@@ -375,8 +375,6 @@
             <div class="tulip-petal tulip-petal--center"></div>
             <div class="tulip-petal tulip-petal--right"></div>
         </div>
-
-        <!-- additional standalone stems with leaves only -->
         <div class="extra-stem extra-stem--1">
             <div class="extra-stem__leaf extra-stem__leaf--1"></div>
             <div class="extra-stem__leaf extra-stem__leaf--2"></div>
@@ -391,11 +389,8 @@
         <div class="extra-stem extra-stem--4">
             <div class="extra-stem__leaf extra-stem__leaf--3"></div>
         </div>
-
-        <!-- LARGE, INDIVIDUAL GRASS (12 distinct blades) -->
         <div class="grass-container">
             <svg class="grass-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
-                <!-- each path is individually curved, thick at bottom (near y=100), narrow at top (y=5-20) -->
                 <path class="grass-blade-svg" d="M50,100 C35,65 15,35 5,12 C12,18 22,30 30,48 C38,65 45,82 50,98 Z" fill="#4cae5c" opacity="0.9" style="animation-delay:0.02s;"/>
                 <path class="grass-blade-svg" d="M50,100 C60,70 75,45 88,18 C80,22 72,38 66,55 C60,72 54,86 50,100 Z" fill="#3d9e4d" opacity="0.85" style="animation-delay:0.07s;"/>
                 <path class="grass-blade-svg" d="M50,100 C28,58 8,28 2,8 C7,14 18,26 26,44 C34,62 43,82 49,96 Z" fill="#5cb85c" opacity="0.95" style="animation-delay:0.12s;"/>
@@ -410,13 +405,12 @@
                 <path class="grass-blade-svg" d="M50,100 C68,60 88,35 97,10 C92,16 82,30 74,48 C66,66 57,84 50,100 Z" fill="#2c7840" opacity="0.8" style="animation-delay:0.57s;"/>
             </svg>
         </div>
-
         <div class="flower__light flower__light--1"></div><div class="flower__light flower__light--2"></div>
         <div class="flower__light flower__light--3"></div><div class="flower__light flower__light--4"></div>
         <div class="flower__light flower__light--5"></div><div class="flower__light flower__light--6"></div>
     </div>
 
-    <!-- ==================== TULIP 2 (center) ==================== -->
+    <!-- TULIP 2 (center) -->
     <div class="flower flower--2">
         <div class="flower__line">
             <div class="flower__line__leaf flower__line__leaf--1"></div>
@@ -464,7 +458,7 @@
         <div class="flower__light flower__light--5"></div><div class="flower__light flower__light--6"></div>
     </div>
 
-    <!-- ==================== TULIP 3 (right) ==================== -->
+    <!-- TULIP 3 (right) -->
     <div class="flower flower--3">
         <div class="flower__line">
             <div class="flower__line__leaf flower__line__leaf--1"></div>
@@ -513,9 +507,9 @@
     </div>
 </div>
 
-<div class="instruction"></div>
+<div class="instruction">✦ starlight whispers at the roots ✦</div>
 
-<!-- FIREFLIES + STARS (unchanged) -->
+<!-- FIREFLIES + STARS -->
 <script>
     (function() {
         const canvas = document.getElementById('fireflyCanvas');
@@ -638,7 +632,7 @@
     })();
 </script>
 
-<!-- SEED ARRIVAL & SOIL LINE (shifted down 2%) -->
+<!-- SEED ARRIVAL & SOIL LINE - FIXED: soil line positioned at the bottom roots -->
 <script>
     (function groundedBloom() {
         const overlay = document.createElement('div');
@@ -663,8 +657,8 @@
                 const fallDuration = 1300;
                 const startSize = 20;
                 const endSize = 5;
-                const shiftDown = 0.02 * window.innerHeight;
-                const finalGroundY = window.innerHeight - 150 + shiftDown;
+                // 🔽 ADJUSTMENT: soil line goes much lower - connects firmly to roots, near bottom edge
+                const finalGroundY = window.innerHeight - 28;  // only 28px from bottom: clean root-level connection
                 function fallAndShrink(timestamp) {
                     if (!startFall) startFall = timestamp;
                     const elapsed = timestamp - startFall;
@@ -688,6 +682,7 @@
                 requestAnimationFrame(fallAndShrink);
             }, 900);
         }, 1000);
+        
         function createPermanentSoilLineAndBloom(groundYPos) {
             const leftLine = document.createElement('div');
             leftLine.className = 'soil-line left-line';
@@ -699,6 +694,7 @@
             rightLine.style.width = '0px';
             document.body.appendChild(leftLine);
             document.body.appendChild(rightLine);
+            // force reflow
             getComputedStyle(leftLine).width;
             getComputedStyle(rightLine).width;
             const leftMax = window.innerWidth / 2;
