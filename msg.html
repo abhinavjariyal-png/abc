@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Enchanted Tulip Garden · Scroll to Bloom</title>
+    <title>Enchanted Tulip Grove | Blooming Wishes</title>
     <style>
         *,
         *::before,
@@ -23,6 +23,7 @@
             --pink-soft: #ffc0d9;
             --green-stem: #2c7840;
             --green-leaf: #4cae5c;
+            --root-glow-green: rgba(80, 255, 100, 0.55);
         }
 
         body {
@@ -35,17 +36,6 @@
             font-family: 'Poppins', sans-serif;
             position: relative;
             perspective: 1200px;
-        }
-
-        /* extra spacer at bottom to ensure scrollable area for reveal */
-        .scroll-trigger-spacer {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            pointer-events: none;
-            opacity: 0;
         }
 
         .night {
@@ -80,7 +70,7 @@
             z-index: 20;
             pointer-events: none;
             backdrop-filter: blur(2px);
-            opacity: 0; /* hidden until scroll reveal */
+            opacity: 0;
             transition: opacity 1.2s ease;
         }
 
@@ -88,7 +78,7 @@
             position: absolute;
             left: 0;
             right: 0;
-            bottom: 100px;
+            bottom: 30px;
             width: 100vw;
             height: auto;
             display: flex;
@@ -96,7 +86,7 @@
             justify-content: center;
             z-index: 15;
             transform: translateX(-8%) scale(0.85);
-            opacity: 0; /* hidden until bottom scroll */
+            opacity: 0;
             transition: opacity 1.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             pointer-events: none;
         }
@@ -134,7 +124,7 @@
         .flower--2 .flower__line { height: 62vmin; animation-delay: 0.2s; }
         .flower--3 .flower__line { height: 52vmin; animation-delay: 0.4s; }
 
-        /* small leaves on the main stem */
+        /* small leaves */
         .flower__line__leaf {
             --w: 7vmin;
             --h: calc(var(--w) + 2vmin);
@@ -165,7 +155,7 @@
         .flower__line__leaf--5 { top: 0; transform-origin: left; transform: rotate(70deg) rotateY(30deg) scale(0.6); animation: blooming-leaf-right var(--fl-speed) 1.8s backwards; }
         .flower__line__leaf--6 { top: -2%; left: -450%; transform-origin: right; transform: rotate(-70deg) rotateY(30deg) scale(0.6); animation: blooming-leaf-left var(--fl-speed) 2s backwards; }
 
-        /* additional standalone stem+leaf structures (no flower) */
+        /* extra decorative stems */
         .extra-stem {
             position: absolute;
             bottom: 0;
@@ -202,7 +192,7 @@
             100% { height: 18vmin; opacity: 1; transform: scaleY(1); }
         }
 
-        /* floating light particles */
+        /* floating light particles (magical dust) */
         .flower__light {
             position: absolute;
             bottom: 0vmin;
@@ -231,23 +221,37 @@
             transform-origin: bottom center;
             pointer-events: none;
         }
-        .tulip-petal--center {
-            z-index: 3;
-            transform: translateX(-59%) scale(1);
-        }
-        .tulip-petal--left {
+        .tulip-petal--center { z-index: 3; transform: translateX(-59%) scale(1); }
+        .tulip-petal--left { z-index: 2; transform: translateX(-95%) rotate(10deg) scale(0.92) scaleX(-1); }
+        .tulip-petal--right { z-index: 1; transform: translateX(-5%) rotate(-20deg) scale(0.92) scaleX(1); }
+        .flower:hover .tulip-petal { filter: brightness(1.02) drop-shadow(0 0 3px #ff90b0); }
+
+        /* root circular glow (added per flower) */
+        .root-glow {
+            position: absolute;
+            bottom: -1.2vmin;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16vmin;
+            height: 16vmin;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(70, 255, 100, 0.65), rgba(50, 210, 70, 0.4), rgba(0, 180, 0, 0) 80%);
+            filter: blur(9px);
+            pointer-events: none;
             z-index: 2;
-            transform: translateX(-95%) rotate(10deg) scale(0.92) scaleX(-1);
-        }
-        .tulip-petal--right {
-            z-index: 1;
-            transform: translateX(-5%) rotate(-20deg) scale(0.92) scaleX(1);
-        }
-        .flower:hover .tulip-petal {
-            filter: brightness(1.02) drop-shadow(0 0 3px #ff90b0);
+            opacity: 0.95;
+            transition: opacity 0.4s;
+            will-change: transform;
+            animation: gentlePulseGlow 2.2s ease-in-out infinite;
         }
 
-        /* animations */
+        @keyframes gentlePulseGlow {
+            0% { opacity: 0.7; transform: translateX(-50%) scale(0.95); filter: blur(8px); }
+            50% { opacity: 1; transform: translateX(-50%) scale(1.08); filter: blur(11px); background: radial-gradient(circle, rgba(100, 255, 120, 0.8), rgba(60, 220, 70, 0.5), rgba(0, 150, 0, 0) 75%); }
+            100% { opacity: 0.7; transform: translateX(-50%) scale(0.95); filter: blur(8px); }
+        }
+
+        /* Animations */
         @keyframes moving-flower-1 { 0%,100%{ transform: rotate(2deg); } 50%{ transform: rotate(-3deg); } }
         @keyframes moving-flower-2 { 0%,100%{ transform: translateX(-50%) rotate(4deg); } 50%{ transform: translateX(-50%) rotate(1deg); } }
         @keyframes moving-flower-3 { 0%,100%{ transform: translateX(-88%) rotate(-6deg); } 50%{ transform: translateX(-88%) rotate(-10deg) rotateY(-3deg); } }
@@ -276,7 +280,7 @@
             z-index: 30;
             text-shadow: 0 0 6px #88aaff;
             background: transparent;
-            opacity: 0; /* hidden until scroll reveal */
+            opacity: 0;
             transition: opacity 1.2s ease;
         }
 
@@ -291,6 +295,7 @@
             display: block;
         }
 
+        /* soil line - will be removed when stems are fully visible */
         .soil-line {
             position: absolute;
             bottom: auto;
@@ -339,7 +344,7 @@
         }
         .arrival-seed.pop { animation: seedPop 0.5s cubic-bezier(0.34, 1.2, 0.64, 1) forwards; }
 
-        /* ========== ENLARGED SVG GRASS – MORE INDIVIDUAL, LARGER ========== */
+        /* Enlarged SVG grass */
         .grass-container {
             position: absolute;
             bottom: -2vmin;
@@ -365,44 +370,12 @@
             0% { transform: scaleY(0); opacity: 0; }
             100% { transform: scaleY(1); opacity: 1; }
         }
-
-        /* hint to scroll at bottom */
-        .scroll-hint {
-            position: fixed;
-            bottom: 70px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(8px);
-            padding: 8px 20px;
-            border-radius: 60px;
-            color: #ffd9e6;
-            font-family: monospace;
-            font-size: 14px;
-            letter-spacing: 1px;
-            z-index: 40;
-            pointer-events: none;
-            white-space: nowrap;
-            border: 1px solid rgba(255,140,170,0.5);
-            box-shadow: 0 0 12px rgba(255,120,140,0.3);
-            opacity: 0;
-            transition: opacity 0.8s ease;
-            animation: gentlePulse 1.8s infinite;
-        }
-        @keyframes gentlePulse {
-            0% { opacity: 0.6; transform: translateX(-50%) scale(1);}
-            100% { opacity: 0.9; transform: translateX(-50%) scale(1.02);}
-        }
-        .scroll-hint.visible {
-            opacity: 1;
-        }
     </style>
 </head>
 <body>
 <div class="night"></div>
 <canvas id="fireflyCanvas"></canvas>
 <div class="title">✦ The Garden Of Wishes ✦</div>
-<div class="scroll-hint" id="scrollHint">⬇ scroll to reveal enchanted blooms ⬇</div>
 
 <div class="flowers">
     <!-- TULIP 1 (left) -->
@@ -418,20 +391,10 @@
             <div class="tulip-petal tulip-petal--center"></div>
             <div class="tulip-petal tulip-petal--right"></div>
         </div>
-        <div class="extra-stem extra-stem--1">
-            <div class="extra-stem__leaf extra-stem__leaf--1"></div>
-            <div class="extra-stem__leaf extra-stem__leaf--2"></div>
-        </div>
-        <div class="extra-stem extra-stem--2">
-            <div class="extra-stem__leaf extra-stem__leaf--3"></div>
-            <div class="extra-stem__leaf extra-stem__leaf--4"></div>
-        </div>
-        <div class="extra-stem extra-stem--3">
-            <div class="extra-stem__leaf extra-stem__leaf--1"></div>
-        </div>
-        <div class="extra-stem extra-stem--4">
-            <div class="extra-stem__leaf extra-stem__leaf--3"></div>
-        </div>
+        <div class="extra-stem extra-stem--1"><div class="extra-stem__leaf extra-stem__leaf--1"></div><div class="extra-stem__leaf extra-stem__leaf--2"></div></div>
+        <div class="extra-stem extra-stem--2"><div class="extra-stem__leaf extra-stem__leaf--3"></div><div class="extra-stem__leaf extra-stem__leaf--4"></div></div>
+        <div class="extra-stem extra-stem--3"><div class="extra-stem__leaf extra-stem__leaf--1"></div></div>
+        <div class="extra-stem extra-stem--4"><div class="extra-stem__leaf extra-stem__leaf--3"></div></div>
         <div class="grass-container">
             <svg class="grass-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
                 <path class="grass-blade-svg" d="M50,100 C35,65 15,35 5,12 C12,18 22,30 30,48 C38,65 45,82 50,98 Z" fill="#4cae5c" opacity="0.9" style="animation-delay:0.02s;"/>
@@ -466,20 +429,10 @@
             <div class="tulip-petal tulip-petal--center"></div>
             <div class="tulip-petal tulip-petal--right"></div>
         </div>
-        <div class="extra-stem extra-stem--1">
-            <div class="extra-stem__leaf extra-stem__leaf--1"></div>
-            <div class="extra-stem__leaf extra-stem__leaf--2"></div>
-        </div>
-        <div class="extra-stem extra-stem--2">
-            <div class="extra-stem__leaf extra-stem__leaf--3"></div>
-            <div class="extra-stem__leaf extra-stem__leaf--4"></div>
-        </div>
-        <div class="extra-stem extra-stem--3">
-            <div class="extra-stem__leaf extra-stem__leaf--1"></div>
-        </div>
-        <div class="extra-stem extra-stem--4">
-            <div class="extra-stem__leaf extra-stem__leaf--3"></div>
-        </div>
+        <div class="extra-stem extra-stem--1"><div class="extra-stem__leaf extra-stem__leaf--1"></div><div class="extra-stem__leaf extra-stem__leaf--2"></div></div>
+        <div class="extra-stem extra-stem--2"><div class="extra-stem__leaf extra-stem__leaf--3"></div><div class="extra-stem__leaf extra-stem__leaf--4"></div></div>
+        <div class="extra-stem extra-stem--3"><div class="extra-stem__leaf extra-stem__leaf--1"></div></div>
+        <div class="extra-stem extra-stem--4"><div class="extra-stem__leaf extra-stem__leaf--3"></div></div>
         <div class="grass-container">
             <svg class="grass-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
                 <path class="grass-blade-svg" d="M50,100 C42,68 22,42 10,18 C16,24 26,36 34,54 C42,72 47,88 50,100 Z" fill="#4cae5c" opacity="0.9" style="animation-delay:0.02s;"/>
@@ -514,20 +467,10 @@
             <div class="tulip-petal tulip-petal--center"></div>
             <div class="tulip-petal tulip-petal--right"></div>
         </div>
-        <div class="extra-stem extra-stem--1">
-            <div class="extra-stem__leaf extra-stem__leaf--1"></div>
-            <div class="extra-stem__leaf extra-stem__leaf--2"></div>
-        </div>
-        <div class="extra-stem extra-stem--2">
-            <div class="extra-stem__leaf extra-stem__leaf--3"></div>
-            <div class="extra-stem__leaf extra-stem__leaf--4"></div>
-        </div>
-        <div class="extra-stem extra-stem--3">
-            <div class="extra-stem__leaf extra-stem__leaf--1"></div>
-        </div>
-        <div class="extra-stem extra-stem--4">
-            <div class="extra-stem__leaf extra-stem__leaf--3"></div>
-        </div>
+        <div class="extra-stem extra-stem--1"><div class="extra-stem__leaf extra-stem__leaf--1"></div><div class="extra-stem__leaf extra-stem__leaf--2"></div></div>
+        <div class="extra-stem extra-stem--2"><div class="extra-stem__leaf extra-stem__leaf--3"></div><div class="extra-stem__leaf extra-stem__leaf--4"></div></div>
+        <div class="extra-stem extra-stem--3"><div class="extra-stem__leaf extra-stem__leaf--1"></div></div>
+        <div class="extra-stem extra-stem--4"><div class="extra-stem__leaf extra-stem__leaf--3"></div></div>
         <div class="grass-container">
             <svg class="grass-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
                 <path class="grass-blade-svg" d="M50,100 C40,66 18,38 8,14 C14,20 24,32 32,50 C40,68 46,86 50,100 Z" fill="#4cae5c" opacity="0.9" style="animation-delay:0.02s;"/>
@@ -550,10 +493,9 @@
     </div>
 </div>
 
-<div class="instruction">✨ magical tulips bloom at twilight ✨</div>
-<div class="scroll-trigger-spacer"></div>
+<div class="instruction">✨ whisper a wish to the glowing tulips ✨</div>
 
-<!-- FIREFLIES + STARS (same as original) -->
+<!-- FIREFLIES + STARS ANIMATION -->
 <script>
     (function() {
         const canvas = document.getElementById('fireflyCanvas');
@@ -630,9 +572,8 @@
         }
 
         function initParticles(w, h) {
-            const fireflyCount = 30;
             fireflies = [];
-            for (let i = 0; i < fireflyCount; i++) {
+            for (let i = 0; i < 30; i++) {
                 const radius = 3 + Math.random() * 5;
                 const x = Math.random() * w;
                 const y = Math.random() * h;
@@ -642,9 +583,8 @@
                 const alpha = 0.5 + Math.random() * 0.4;
                 fireflies.push(new Firefly(x, y, radius, speedX, speedY, color, alpha));
             }
-            const starCount = 30;
             stars = [];
-            for (let i = 0; i < starCount; i++) {
+            for (let i = 0; i < 30; i++) {
                 const radius = 1.5 + Math.random() * 3;
                 const x = Math.random() * w;
                 const y = Math.random() * h;
@@ -676,10 +616,9 @@
     })();
 </script>
 
-<!-- SEED ARRIVAL + REVEAL ON SCROLL BOTTOM (flowers hidden until page end) -->
+<!-- SEED ARRIVAL, ROOT GLOW & REMOVE SOIL LINE AFTER STEMS APPEAR -->
 <script>
-    (function enchantedReveal() {
-        // ---- seed arrival & soil line animation (visual magic) ----
+    (function groundedBloom() {
         const overlay = document.createElement('div');
         overlay.className = 'arrival-overlay';
         document.body.appendChild(overlay);
@@ -687,15 +626,6 @@
         seed.className = 'arrival-seed';
         overlay.appendChild(seed);
         const flowersContainer = document.querySelector('.flowers');
-        const titleEl = document.querySelector('.title');
-        const instructionEl = document.querySelector('.instruction');
-        const scrollHint = document.getElementById('scrollHint');
-
-        // initially hidden until scroll reach bottom
-        flowersContainer.style.opacity = '0';
-        titleEl.style.opacity = '0';
-        instructionEl.style.opacity = '0';
-        
         const centerX = window.innerWidth / 2;
         seed.style.opacity = '0';
         seed.style.left = `${centerX - 10}px`;
@@ -729,7 +659,7 @@
                         requestAnimationFrame(fallAndShrink);
                     } else {
                         seed.remove();
-                        createSoilLine(finalGroundY);
+                        createPermanentSoilLineAndBloom(finalGroundY);
                         flowersContainer.style.bottom = `${window.innerHeight - finalGroundY}px`;
                     }
                 }
@@ -737,7 +667,7 @@
             }, 900);
         }, 1000);
         
-        function createSoilLine(groundYPos) {
+        function createPermanentSoilLineAndBloom(groundYPos) {
             const leftLine = document.createElement('div');
             leftLine.className = 'soil-line left-line';
             const rightLine = document.createElement('div');
@@ -749,62 +679,77 @@
             document.body.appendChild(leftLine);
             document.body.appendChild(rightLine);
             getComputedStyle(leftLine).width;
+            getComputedStyle(rightLine).width;
             const leftMax = window.innerWidth / 2;
             const rightMax = window.innerWidth - leftMax;
             leftLine.style.width = `${leftMax}px`;
             rightLine.style.width = `${rightMax}px`;
             
-            // after soil line animation we don't reveal flowers yet.
-            // Instead just remove overlay after delay.
-            setTimeout(() => {
-                overlay.style.opacity = '0';
-                setTimeout(() => { if (overlay.parentNode) overlay.remove(); }, 1400);
-            }, 1000);
-        }
-        
-        // ---- SCROLL REVEAL LOGIC (flowers appear ONLY when at very bottom) ----
-        let revealed = false;
-        
-        function checkScrollToBottom() {
-            if (revealed) return;
-            const scrollTop = window.scrollY;
-            const windowHeight = window.innerHeight;
-            const docHeight = document.documentElement.scrollHeight;
-            // threshold: 20px from actual bottom
-            const isBottom = (scrollTop + windowHeight) >= (docHeight - 20);
-            if (isBottom) {
-                revealed = true;
-                // reveal flowers, title and instruction with elegance
+            let soilExpanded = false;
+            const onSoilEnd = () => {
+                if (soilExpanded) return;
+                soilExpanded = true;
                 flowersContainer.style.opacity = '1';
-                titleEl.style.opacity = '1';
-                instructionEl.style.opacity = '1';
-                if (scrollHint) scrollHint.style.opacity = '0';
-                // optional: remove scroll listener
-                window.removeEventListener('scroll', checkScrollToBottom);
-                window.removeEventListener('resize', checkScrollToBottom);
-            } else {
-                // show hint while not yet at bottom
-                if (scrollHint && !revealed) scrollHint.classList.add('visible');
-            }
+                setTimeout(() => {
+                    document.querySelector('.title').style.opacity = '1';
+                    document.querySelector('.instruction').style.opacity = '1';
+                    setTimeout(() => {
+                        overlay.style.opacity = '0';
+                        setTimeout(() => { if (overlay.parentNode) overlay.remove(); }, 1500);
+                    }, 300);
+                }, 600);
+                
+                // 🌿✨ ADD ROOT GLOW (circular green glows) & REMOVE SOIL LINE AFTER STEMS APPEAR
+                setTimeout(() => {
+                    addGreenRootGlowToFlowers();
+                    // Remove the temporary soil line after stems are visible
+                    const soilLines = document.querySelectorAll('.soil-line');
+                    soilLines.forEach(line => {
+                        if (line.parentNode) line.remove();
+                    });
+                }, 650); // stems are fully grown & visible, remove elegant line
+            };
+            
+            let transitionFinished = false;
+            const onTransitionEnd = (e) => {
+                if (e.target === leftLine || e.target === rightLine) {
+                    if (!transitionFinished) {
+                        transitionFinished = true;
+                        leftLine.removeEventListener('transitionend', onTransitionEnd);
+                        rightLine.removeEventListener('transitionend', onTransitionEnd);
+                        onSoilEnd();
+                    }
+                }
+            };
+            leftLine.addEventListener('transitionend', onTransitionEnd);
+            rightLine.addEventListener('transitionend', onTransitionEnd);
+            setTimeout(() => {
+                if (!transitionFinished) {
+                    transitionFinished = true;
+                    onSoilEnd();
+                }
+            }, 1400);
         }
         
-        // small delay to ensure layout is stable after seed animation
-        setTimeout(() => {
-            window.addEventListener('scroll', checkScrollToBottom);
-            window.addEventListener('resize', checkScrollToBottom);
-            checkScrollToBottom(); // initial check
-        }, 1800);
-        
-        // adjust flowers container bottom on resize
-        window.addEventListener('resize', () => {
-            const lines = document.querySelectorAll('.soil-line');
-            if (lines.length === 2) {
-                const currentGround = parseFloat(lines[0].style.top) + 3;
-                if (!isNaN(currentGround)) {
-                    const newBottom = window.innerHeight - currentGround;
-                    if (flowersContainer) flowersContainer.style.bottom = `${newBottom}px`;
+        function addGreenRootGlowToFlowers() {
+            const flowers = document.querySelectorAll('.flower');
+            flowers.forEach(flower => {
+                if (!flower.querySelector('.root-glow')) {
+                    const glowDiv = document.createElement('div');
+                    glowDiv.className = 'root-glow';
+                    flower.appendChild(glowDiv);
                 }
-            }
+            });
+        }
+        
+        document.querySelector('.title').style.opacity = '0';
+        document.querySelector('.flowers').style.opacity = '0';
+        document.querySelector('.instruction').style.opacity = '0';
+        
+        window.addEventListener('resize', () => {
+            const existingGlows = document.querySelectorAll('.root-glow');
+            if (existingGlows.length === 0) return;
+            // just re-position maybe already fine, but we keep safety
         });
     })();
 </script>
