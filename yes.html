@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>✨ Magic Scratch Card ✨</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Cormorant+Garamond:wght@400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #1a0505 0%, #2d0a0a 55%, #1a0000 100%);
+            font-family: 'Cormorant Garamond', serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* animated background glow */
+        .glow {
+            position: fixed;
+            width: 70vw;
+            height: 70vw;
+            max-width: 600px;
+            max-height: 600px;
+            background: radial-gradient(circle, rgba(255,60,80,0.35) 0%, transparent 70%);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: glowPulse 4s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        /* stars container */
+        .stars-wrapper {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            font-size: 18px;
+            color: #ffecb3;
+            opacity: 0;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .star-bright {
+            animation: twinkleBright 2.8s infinite ease-in-out;
+            text-shadow: 0 0 12px #fff, 0 0 20px #ffb347;
+        }
+
+        .star-soft {
+            animation: twinkleSoft 3.5s infinite ease-in-out;
+            text-shadow: 0 0 6px #ffe0b5;
+        }
+
+        @keyframes twinkleBright {
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @keyframes twinkleSoft {
+            0%, 100% { opacity: 0.15; transform: scale(0.7); }
+            50% { opacity: 0.7; transform: scale(1); }
+        }
+
+        /* MAIN CONTENT */
+        .content {
+            text-align: center;
+            z-index: 12;
+            margin-bottom: 30px;
+            position: relative;
+            backdrop-filter: blur(2px);
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.2rem, 8vw, 3.8rem);
+            color: #ff5e7e;
+            text-shadow: 0 0 20px rgba(255, 77, 109, 0.9);
+            letter-spacing: 2px;
+        }
+
+        .message {
+            font-size: clamp(1.2rem, 5vw, 1.8rem);
+            color: #ffc2d0;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .hearts {
+            font-size: 2rem;
+            margin: 15px 0;
+            letter-spacing: 10px;
+        }
+
+        /* SCRATCH CARD CONTAINER - MOBILE FIRST */
+        .scratch-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px auto 30px;
+            z-index: 15;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            opacity: 0;
+            transform: translateX(-80px) rotate(-6deg);
+            transition: all 0.7s cubic-bezier(0.34, 1.2, 0.64, 1);
+        }
+
+        .scratch-wrapper.animate-in {
+            opacity: 1;
+            transform: translateX(0) rotate(0deg);
+        }
+
+        .scratch-card {
+            position: relative;
+            width: 92%;
+            max-width: 450px;
+            aspect-ratio: 4 / 3;
+            background: #fff0e0;
+            border-radius: 28px;
+            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.5), 0 0 0 5px rgba(255, 215, 180, 0.5);
+            overflow: hidden;
+            cursor: pointer;
+            touch-action: none;
+        }
+
+        /* hidden message under scratch */
+        .secret-message {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #fff5e8, #ffefdd);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            padding: 20px;
+            z-index: 1;
+            border-radius: 28px;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.05);
+        }
+
+        .secret-message h3 {
+            font-size: clamp(1.6rem, 7vw, 2.4rem);
+            color: #b22234;
+            margin-bottom: 12px;
+            font-weight: 800;
+        }
+
+        .secret-message p {
+            font-size: clamp(1rem, 4vw, 1.3rem);
+            color: #8b3c2c;
+            font-weight: 600;
+            background: rgba(255,245,220,0.7);
+            padding: 8px 15px;
+            border-radius: 60px;
+        }
+
+        .secret-message .gift-emoji {
+            font-size: 3.5rem;
+            margin-top: 12px;
+            animation: bounce 1s infinite alternate;
+        }
+
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-10px); }
+        }
+
+        canvas#scratchCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            touch-action: none;
+            cursor: grabbing;
+            border-radius: 28px;
+        }
+
+        /* TIMER OVERLAY (countdown modal) */
+        .countdown-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.3s ease;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .countdown-modal.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .countdown-box {
+            background: radial-gradient(circle at 30% 10%, #fff0e0, #ffd9b5);
+            padding: 2rem 3rem;
+            border-radius: 80px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6), 0 0 0 4px #ffb347;
+            animation: pop 0.4s cubic-bezier(0.34, 1.2, 0.8, 1);
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.7); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .countdown-number {
+            font-size: 5rem;
+            font-weight: 900;
+            color: #b22222;
+            text-shadow: 4px 4px 0px #ffcd94;
+            letter-spacing: 8px;
+            margin: 10px 0;
+        }
+
+        .countdown-text {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #572c1d;
+        }
+
+        /* restart heart button */
+        .restart-btn {
+            background: linear-gradient(135deg, #ff4d6d, #c9184a);
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 60px;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            margin-top: 15px;
+            transition: transform 0.2s ease;
+            color: white;
+            backdrop-filter: blur(4px);
+        }
+
+        .restart-btn:active {
+            transform: scale(0.92);
+        }
+
+        /* instructions for mobile */
+        .hint {
+            font-size: 0.85rem;
+            color: #ffbc9a;
+            margin-top: 16px;
+            background: rgba(0,0,0,0.5);
+            padding: 6px 14px;
+            border-radius: 80px;
+            display: inline-block;
+        }
+
+        @media (max-width: 550px) {
+            .scratch-card {
+                width: 96%;
+            }
+            .countdown-number {
+                font-size: 3.5rem;
+            }
+            .restart-btn {
+                width: 55px;
+                height: 55px;
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="glow"></div>
+<div class="stars-wrapper" id="starsWrapper"></div>
+
+<div class="content">
+    <div class="title">💖 Thank You! 💖</div>
+    <div class="message">you made my day magical</div>
+    <div class="hearts">✨ ✨ 💫 ✨ ✨</div>
+    <div class="message">You said Yes! 🎉</div>
+    <div class="message" style="font-size: 1.3rem;">Scratch the card to reveal your surprise ✨</div>
+</div>
+
+<!-- SCRATCH CARD ZONE -->
+<div class="scratch-wrapper" id="scratchWrapper">
+    <div class="scratch-card" id="scratchCard">
+        <!-- hidden message (revealed after scratch) -->
+        <div class="secret-message">
+            <p>You unlocked a secret gift! 💎</p>
+            <p>Get Ready!</p>
+            <div class="gift-emoji">🎀✨🌟</div>
+            <p style="font-size: 0.9rem; margin-top: 10px;">❤️ something special awaits...</p>
+        </div>
+        <canvas id="scratchCanvas"></canvas>
+    </div>
+</div>
+<div class="hint">👉 Use your finger to scratch the gray area 👈</div>
+<button class="restart-btn" id="restartBtn">❤️</button>
+
+<!-- COUNTDOWN MODAL -->
+<div id="countdownModal" class="countdown-modal">
+    <div class="countdown-box">
+        <div class="countdown-text">🎁 GET READY 🎁</div>
+        <div class="countdown-number" id="countdownNumber">3</div>
+    </div>
+</div>
+
+<script>
+    (function(){
+        // ---------- STARS BACKGROUND (mobile optimized) ----------
+        const starsWrapper = document.getElementById('starsWrapper');
+        const starSymbols = ['✦', '✧', '⭐', '✨', '💫'];
+        
+        function createStar(className, sizeMin, sizeMax) {
+            const star = document.createElement('div');
+            star.className = `star ${className}`;
+            star.textContent = starSymbols[Math.floor(Math.random() * starSymbols.length)];
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            const fontSize = Math.floor(Math.random() * (sizeMax - sizeMin + 1) + sizeMin);
+            star.style.fontSize = fontSize + 'px';
+            starsWrapper.appendChild(star);
+            setTimeout(() => {
+                star.remove();
+            }, 3500);
+        }
+        
+        function initStars() {
+            for(let i = 0; i < 20; i++) {
+                setTimeout(() => createStar('star-bright', 12, 24), i * 180);
+                setTimeout(() => createStar('star-soft', 10, 20), i * 250);
+            }
+            setInterval(() => createStar('star-bright', 14, 26), 700);
+            setInterval(() => createStar('star-soft', 12, 22), 900);
+        }
+        initStars();
+        
+        // ---------- SCRATCH CARD MOBILE OPTIMIZED ----------
+        const canvas = document.getElementById('scratchCanvas');
+        const scratchWrapperDiv = document.getElementById('scratchWrapper');
+        let ctx = canvas.getContext('2d');
+        
+        // Canvas resolution (higher for detail, but mapping will keep accuracy)
+        const CANVAS_W = 800;   // internal buffer width
+        const CANVAS_H = 600;   // internal buffer height (4:3 ratio)
+        canvas.width = CANVAS_W;
+        canvas.height = CANVAS_H;
+        
+        let isScratching = false;
+        let isRevealed = false;
+        let audioContext = null;
+        let audioAllowed = false;
+        
+        // Helper: initialize Web Audio on first user gesture
+        function initAudio() {
+            if (audioContext && audioContext.state !== 'closed') return Promise.resolve(audioContext);
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            return audioContext.resume().then(() => {
+                audioAllowed = true;
+            }).catch(e => console.log("audio resume error", e));
+        }
+        
+        // Play beep sound with Web Audio (short beep)
+        function playBeep(type = 'count') {
+            if (!audioAllowed || !audioContext || audioContext.state !== 'running') {
+                // try to resume if needed
+                if (audioContext && audioContext.state === 'suspended') {
+                    audioContext.resume().then(() => {
+                        if(audioContext.state === 'running') playBeepInternal(type);
+                    }).catch(()=>{});
+                }
+                return;
+            }
+            playBeepInternal(type);
+        }
+        
+        function playBeepInternal(type) {
+            if (!audioContext || audioContext.state !== 'running') return;
+            const now = audioContext.currentTime;
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.type = 'sine';
+            let frequency = type === 'count' ? 880 : 660;
+            osc.frequency.value = frequency;
+            gain.gain.value = 0.35;
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.4);
+            osc.start();
+            osc.stop(now + 0.35);
+        }
+        
+        // Draw scratch surface with metallic texture and "Scratch Here"
+        function drawScratchSurface() {
+            // fill metallic grey base
+            ctx.fillStyle = '#b5b9b2';
+            ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+            // noise particles
+            for(let i = 0; i < 4000; i++) {
+                ctx.fillStyle = Math.random() > 0.6 ? '#e0e4dc' : '#8f948c';
+                ctx.fillRect(Math.random() * CANVAS_W, Math.random() * CANVAS_H, 2, 2);
+            }
+            // shiny streaks
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.beginPath();
+            for(let s=0; s<200; s++) {
+                ctx.beginPath();
+                ctx.moveTo(Math.random() * CANVAS_W, Math.random() * CANVAS_H);
+                ctx.lineTo(Math.random() * CANVAS_W, Math.random() * CANVAS_H);
+                ctx.strokeStyle = `rgba(255,245,210,${Math.random() * 0.3})`;
+                ctx.lineWidth = Math.random() * 1.5;
+                ctx.stroke();
+            }
+            // text "SCRATCH HERE"
+            ctx.font = `bold ${Math.floor(CANVAS_W * 0.08)}px 'Playfair Display'`;
+            ctx.fillStyle = '#fef7e0';
+            ctx.shadowBlur = 0;
+            ctx.textAlign = 'center';
+            ctx.fillText('✨ SCRATCH ✨', CANVAS_W/2, CANVAS_H/2 - 15);
+            ctx.font = `${Math.floor(CANVAS_W * 0.045)}px 'Cormorant Garamond'`;
+            ctx.fillStyle = '#fff2cf';
+            ctx.fillText('👉  finger swipe  👈', CANVAS_W/2, CANVAS_H/2 + 45);
+            ctx.textAlign = 'left';
+        }
+        
+        drawScratchSurface();
+        
+        // coordinate mapping: from DOM (screen relative) to canvas buffer coordinates
+        function getCanvasCoords(clientX, clientY) {
+            const rect = canvas.getBoundingClientRect();
+            if (rect.width === 0 || rect.height === 0) return null;
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let canvasX = (clientX - rect.left) * scaleX;
+            let canvasY = (clientY - rect.top) * scaleY;
+            canvasX = Math.min(Math.max(0, canvasX), canvas.width);
+            canvasY = Math.min(Math.max(0, canvasY), canvas.height);
+            return { x: canvasX, y: canvasY };
+        }
+        
+        // scratch effect: erase with radial gradient (finger-size)
+        function scratchAt(x, y, radius = 38) {
+            if (isRevealed) return;
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.globalCompositeOperation = 'source-over';
+        }
+        
+        // Check scratching percentage (transparent pixels > 28%)
+        let checkScheduled = false;
+        function checkScratchThreshold() {
+            if (isRevealed) return;
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const pixels = imageData.data;
+            let transparentCount = 0;
+            for (let i = 3; i < pixels.length; i += 4) {
+                if (pixels[i] === 0) transparentCount++;
+            }
+            const totalPixels = canvas.width * canvas.height;
+            const percent = (transparentCount / totalPixels) * 100;
+            if (percent >= 28) {
+                revealCard();
+            }
+        }
+        
+        let revealTimer = null;
+        function revealCard() {
+            if (isRevealed) return;
+            isRevealed = true;
+            // fade out canvas smoothly
+            canvas.style.transition = 'opacity 0.6s ease';
+            canvas.style.opacity = '0';
+            setTimeout(() => {
+                canvas.style.display = 'none';
+                // once canvas hidden, secret message fully visible
+                // start countdown with sound & timer
+                startCountdownAndSound();
+            }, 600);
+        }
+        
+        // TIMER + SOUND EFFECT (when scratch revealed)
+        let countdownActive = false;
+        let countdownInterval = null;
+        
+        function startCountdownAndSound() {
+            if (countdownActive) return;
+            countdownActive = true;
+            
+            // ensure audio context is active (user already scratched, so we can resume)
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    audioAllowed = true;
+                    playBeep('count');
+                }).catch(e=>console.log);
+            } else if (!audioContext) {
+                initAudio().then(()=>{
+                    playBeep('count');
+                }).catch(()=>{});
+            } else if (audioContext && audioContext.state === 'running') {
+                playBeep('count');
+            } else {
+                // fallback try
+                if(audioContext) audioContext.resume();
+            }
+            
+            const modal = document.getElementById('countdownModal');
+            const countNumSpan = document.getElementById('countdownNumber');
+            let count = 3;
+            countNumSpan.innerText = count;
+            modal.classList.add('active');
+            
+            // first beep immediately
+            playBeep('count');
+            
+            countdownInterval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countNumSpan.innerText = count;
+                    playBeep('count');
+                } else {
+                    clearInterval(countdownInterval);
+                    countNumSpan.innerText = "1";
+                    // final beep before redirect
+                    playBeep('count');
+                    // final action: redirect to home2.html (or reload simulation)
+                    setTimeout(() => {
+                        // redirect (according to original spec)
+                        window.location.href = "home2.html";
+                    }, 400);
+                }
+            }, 1000);
+        }
+        
+        // ---- SCRATCH EVENT HANDLERS (MOBILE + DESKTOP) ----
+        function handleScratchStart(e) {
+            if (isRevealed) return;
+            e.preventDefault();
+            isScratching = true;
+            // enable audio on first touch to unlock webaudio
+            if (!audioAllowed && audioContext === null) {
+                initAudio().catch(()=>{});
+            } else if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            // process immediate point
+            const point = getEventCoord(e);
+            if (point) {
+                scratchAt(point.x, point.y);
+                checkScratchThreshold();
+            }
+        }
+        
+        function handleScratchMove(e) {
+            if (!isScratching || isRevealed) return;
+            e.preventDefault();
+            const point = getEventCoord(e);
+            if (point) {
+                scratchAt(point.x, point.y);
+                // throttle threshold checks
+                if (!checkScheduled) {
+                    checkScheduled = true;
+                    requestAnimationFrame(() => {
+                        checkScratchThreshold();
+                        checkScheduled = false;
+                    });
+                }
+            }
+        }
+        
+        function handleScratchEnd(e) {
+            isScratching = false;
+            e.preventDefault();
+        }
+        
+        function getEventCoord(e) {
+            let clientX, clientY;
+            if (e.touches) {
+                if (e.touches.length === 0) return null;
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            return getCanvasCoords(clientX, clientY);
+        }
+        
+        // Add event listeners with touch + mouse
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            handleScratchStart(e);
+        }, { passive: false });
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            handleScratchMove(e);
+        }, { passive: false });
+        canvas.addEventListener('touchend', handleScratchEnd);
+        canvas.addEventListener('touchcancel', handleScratchEnd);
+        
+        canvas.addEventListener('mousedown', handleScratchStart);
+        window.addEventListener('mousemove', (e) => {
+            if (isScratching && !isRevealed) {
+                const rect = canvas.getBoundingClientRect();
+                if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) {
+                    handleScratchMove(e);
+                } else {
+                    // if mouse leaves canvas while dragging, stop scratching
+                    if(isScratching) isScratching = false;
+                }
+            }
+        });
+        window.addEventListener('mouseup', () => { isScratching = false; });
+        
+        // ---------- CARD SLIDE-IN ANIMATION (mobile friendly) ----------
+        setTimeout(() => {
+            scratchWrapperDiv.classList.add('animate-in');
+        }, 400);
+        
+        // ---------- RESTART BUTTON ----------
+        const restartBtn = document.getElementById('restartBtn');
+        restartBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            location.reload();
+        });
+        
+        // Cleanup any countdown interval if page unloads
+        window.addEventListener('beforeunload', () => {
+            if (countdownInterval) clearInterval(countdownInterval);
+        });
+        
+        // prevent body scroll while scratching on canvas
+        canvas.addEventListener('touchmove', (e) => {
+            if (!isRevealed) e.preventDefault();
+        }, { passive: false });
+        
+        // For better mobile integration: ensure canvas is visible and responsive
+        function handleCanvasResize() {
+            // just recalc aspect (canvas already uses internal 800x600, style width/height defined by css)
+            // This also prevents mapping issues
+        }
+        window.addEventListener('resize', () => {});
+        handleCanvasResize();
+        
+        // If by any chance redirect happens before? Not.
+        console.log("✨ Magic scratch card ready — mobile optimized ✨");
+        
+        // Optional: improve scratch radius for bigger fingers
+        // Already radius 38px on 800x600 buffer -> feels smooth.
+        // Additionally, for big fingers, we also draw extra radius? original scratchAt radius is 38 (good)
+        // Enhance: also draw multiple points on fast move? move already draws circles.
+        // That's enough.
+        
+        // preload audio context flag: user must interact -> first scratch triggers, fine.
+        // Beep sound integrated with countdown.
+        // Also adding a special effect: if canvas is fully revealed, start countdown.
+    })();
+</script>
+</body>
+</html>

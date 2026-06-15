@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oh No!</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@400;600&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { min-height: 100vh; background: linear-gradient(135deg, #1a0505 0%, #2d0a0a 50%, #1a0000 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; overflow: hidden; position: relative; }
+        
+        .star-bg { position: absolute; font-size: 15px; color: #c0c0c0; opacity: 0; z-index: 1; }
+        .star-glow-max { animation: twinkleMax 3s ease-in-out infinite; text-shadow: 0 0 15px #ffffff, 0 0 30px #d4d4d4, 0 0 50px #a8a8a8; }
+        .star-glow-normal { animation: twinkleNormal 3.5s ease-in-out infinite; text-shadow: 0 0 8px #d4d4d4, 0 0 15px #909090; }
+        @keyframes twinkleMax { 0%, 100% { opacity: 0.3; transform: scale(0.85); } 50% { opacity: 1; transform: scale(1.1); } }
+        @keyframes twinkleNormal { 0%, 100% { opacity: 0.25; transform: scale(0.8); } 50% { opacity: 0.7; transform: scale(1); } }
+        
+        .glow { position: absolute; width: 500px; height: 500px; background: radial-gradient(circle, rgba(255,0,0,0.4) 0%, transparent 70%); border-radius: 50%; animation: glowPulse 3s ease-in-out infinite; }
+        @keyframes glowPulse { 0%, 100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.3); opacity: 1; } }
+        
+        .content { z-index: 10; text-align: center; padding: 40px; }
+        .title { font-family: 'Playfair Display', serif; font-size: 3.5rem; color: #ff4d6d; margin-bottom: 15px; text-shadow: 0 0 40px rgba(255,77,109,0.9); }
+        .message { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #ffb3c1; margin-bottom: 20px; font-style: italic; }
+        
+        .emoji { font-size: 6rem; animation: cryShake 2s ease-in-out infinite; }
+        @keyframes cryShake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px) rotate(-5deg); } 75% { transform: translateX(5px) rotate(5deg); } }
+        
+        .yes-btn { background: linear-gradient(135deg, #4169e1, #2850c8); color: white; border: none; padding: 20px 60px; font-size: 1.5rem; font-family: 'Playfair Display', serif; letter-spacing: 3px; border-radius: 50px; cursor: pointer; margin-top: 30px; }
+        .yes-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(65,105,225,0.5); }
+    </style>
+</head>
+<body>
+    <div class="glow"></div>
+    <div id="stars"></div>
+    
+    <div class="content">
+        <div class="title">Ohhh!</div>
+        <div class="emoji">😢</div>
+        <div class="message">you clicked no</div>
+        <div class="message">please click yes</div>
+        <button class="yes-btn" onclick="goToYes()">✓ Yes</button>
+    </div>
+    
+    <script>
+        var silverStars = ['✦', '✧'];
+        var starCount = 0;
+        var maxStars = 20;
+        
+        function createMaxGlowStar() {
+            if (starCount >= maxStars) return;
+            var star = document.createElement('div');
+            star.className = 'star-bg star-glow-max';
+            star.textContent = silverStars[0];
+            star.style.left = Math.random() * 92 + 4 + 'vw';
+            star.style.top = Math.random() * 85 + 5 + 'vh';
+            star.style.fontSize = (Math.random() * 5 + 13) + 'px';
+            document.getElementById('stars').appendChild(star);
+            starCount++;
+            setTimeout(function() { star.remove(); starCount--; }, 3500);
+        }
+        
+        function createNormalGlowStar() {
+            if (starCount >= maxStars) return;
+            var star = document.createElement('div');
+            star.className = 'star-bg star-glow-normal';
+            star.textContent = silverStars[1];
+            star.style.left = Math.random() * 92 + 4 + 'vw';
+            star.style.top = Math.random() * 85 + 5 + 'vh';
+            star.style.fontSize = (Math.random() * 4 + 11) + 'px';
+            document.getElementById('stars').appendChild(star);
+            starCount++;
+            setTimeout(function() { star.remove(); starCount--; }, 4000);
+        }
+        
+        for (var i = 0; i < 10; i++) { setTimeout(createMaxGlowStar, i * 200); }
+        for (var j = 0; j < 10; j++) { setTimeout(createNormalGlowStar, j * 200); }
+        setInterval(createMaxGlowStar, 600);
+        setInterval(createNormalGlowStar, 600);
+        
+        function goToYes() {
+            window.location.href = 'yes.html';
+        }
+    </script>
+</body>
+</html>

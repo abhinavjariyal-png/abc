@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Surprise!</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@400;600&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cormorant Garamond', serif;
+            overflow: hidden;
+            transition: background 1s ease;
+            position: relative;
+        }
+
+        body.light-on {
+            background: #fff5eb;
+        }
+
+        /* DARK CONTENT (initial screen) */
+        .dark-content {
+            z-index: 10;
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .title-dark {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 8vw, 3rem);
+            color: #ffd966;
+            margin-bottom: 30px;
+            text-shadow: 0 0 15px rgba(255,220,100,0.5);
+        }
+
+        .turn-on-btn {
+            background: linear-gradient(145deg, #ffd966, #ffb347);
+            color: #2c1a0a;
+            border: none;
+            padding: 14px 35px;
+            font-size: clamp(1.2rem, 5vw, 1.6rem);
+            font-family: 'Playfair Display', serif;
+            font-weight: bold;
+            letter-spacing: 3px;
+            border-radius: 60px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 200, 50, 0.6);
+            transition: transform 0.2s, box-shadow 0.2s;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease, transform 0.2s;
+        }
+
+        .turn-on-btn.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .turn-on-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* SCENE (after light turns on) - centered gift */
+        .scene {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
+
+        .scene-show {
+            display: flex;
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* GIFT CONTAINER - centered on screen */
+        .gift-container {
+            position: relative;
+            width: 280px;
+            max-width: 42vw;
+            aspect-ratio: 1 / 1;
+            cursor: pointer;
+            z-index: 30;
+            margin: 0 auto;
+        }
+
+        #giftBox {
+            position: absolute;
+            width: 100%;
+            height: auto;
+            left: 0;
+            top: 0;
+            z-index: 5;
+            transition: opacity 0.2s ease;
+            animation: giftWobble 3s ease-in-out infinite;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3));
+            cursor: pointer;
+        }
+
+        /* Cloth – covers gift box completely (centered) */
+        #cloth {
+            position: absolute;
+            width: 220%;
+            height: auto;
+            left: -60%;
+            top: -60%;
+            z-index: 25;
+            pointer-events: auto;
+            filter: drop-shadow(0 8px 15px rgba(0,0,0,0.3));
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
+                        transform 0.9s cubic-bezier(0.34, 1.2, 0.64, 1);
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        /* Fade out + lift cloth */
+        #cloth.cloth-fadeout {
+            opacity: 0;
+            transform: scale(0.85) translateY(-35px);
+            pointer-events: none;
+        }
+
+        /* Gift wobble animation */
+        @keyframes giftWobble {
+            0%, 100% { transform: rotate(0deg) translateY(0px); }
+            25% { transform: rotate(-2deg) translateY(-5px); }
+            75% { transform: rotate(2deg) translateY(-3px); }
+        }
+
+        /* ========== MOBILE SPECIFIC ADJUSTMENTS ========== */
+        @media (max-width: 768px) {
+            .gift-container {
+                width: 65vw;
+                max-width: 280px;
+            }
+            #cloth {
+                width: 280%;
+                left: -90%;
+                top: -85%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gift-container {
+                width: 75vw;
+                max-width: 260px;
+
+            }
+            #cloth {
+                width: 180%;
+             left:-40%;     
+                        top: -25%;
+            }
+        }
+
+        /* TNT IGNITE EFFECTS */
+        .fuse-spark {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, #ffaa33, #ff6600);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10010;
+            animation: sparkFly 0.6s ease-out forwards;
+        }
+
+        @keyframes sparkFly {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0); opacity: 0; }
+        }
+
+        .ignite-glow {
+            position: fixed;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ffaa33, #ff4400);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 10009;
+            animation: glowPulse 0.8s ease-out forwards;
+        }
+
+        @keyframes glowPulse {
+            0% { width: 30px; height: 30px; opacity: 0.8; box-shadow: 0 0 20px #ffaa33; }
+            100% { width: 150px; height: 150px; opacity: 0; box-shadow: 0 0 0px transparent; }
+        }
+
+        .smoke-puff {
+            position: fixed;
+            border-radius: 50%;
+            background: rgba(80, 70, 60, 0.6);
+            filter: blur(8px);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 10008;
+            animation: smokeRise 1s ease-out forwards;
+        }
+
+        @keyframes smokeRise {
+            0% { width: 20px; height: 20px; opacity: 0.5; transform: translate(-50%, -50%) scale(0.5); }
+            100% { width: 120px; height: 120px; opacity: 0; transform: translate(-50%, -50%) scale(2); }
+        }
+
+        /* BLACKOUT SCREEN (final persistent black) */
+        .blackout {
+            position: fixed;
+            inset: 0;
+            background: black;
+            opacity: 0;
+            z-index: 9999;
+            pointer-events: none;
+            transition: opacity 0.8s ease;
+        }
+
+        .blackout.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* EXPLOSION CORE (upgraded) */
+        .explosion-core {
+            position: fixed;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fff9c4, #ffaa33, #ff4400, #aa0000);
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 10000;
+            pointer-events: none;
+            animation: megaBlast 0.9s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes megaBlast {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            40% { transform: translate(-50%, -50%) scale(12); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(22); opacity: 0; }
+        }
+
+        .shockwave {
+            position: fixed;
+            border-radius: 50%;
+            background: transparent;
+            box-shadow: 0 0 0 0 rgba(255, 100, 0, 0.8);
+            transform: translate(-50%, -50%);
+            z-index: 9998;
+            pointer-events: none;
+            animation: shockwavePulse 0.8s ease-out forwards;
+        }
+
+        @keyframes shockwavePulse {
+            0% { width: 20px; height: 20px; box-shadow: 0 0 0 0 rgba(255, 100, 0, 0.7); opacity: 1; }
+            100% { width: 700px; height: 700px; box-shadow: 0 0 0 80px rgba(255, 60, 0, 0); opacity: 0; }
+        }
+
+        .particle-blast {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ffaa33;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 10001;
+            animation: particleFly 1.2s ease-out forwards;
+        }
+
+        @keyframes particleFly {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0);
+                opacity: 0;
+            }
+        }
+
+        .spark {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, gold, crimson);
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 10002;
+            animation: sparkMove 1s ease-out forwards;
+        }
+
+        @keyframes sparkMove {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(360deg) scale(0);
+                opacity: 0;
+            }
+        }
+
+        .shake-screen {
+            animation: violentShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+
+        @keyframes violentShake {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            20% { transform: translate(-8px, 6px) rotate(-1deg); }
+            40% { transform: translate(8px, -4px) rotate(1deg); }
+            60% { transform: translate(-4px, 5px) rotate(-0.5deg); }
+            80% { transform: translate(4px, -2px) rotate(0.5deg); }
+            100% { transform: translate(0, 0) rotate(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="dark-content" id="darkContent">
+        <button class="turn-on-btn" id="turnOnBtn">💡 Turn on light</button>
+    </div>
+
+    <div class="scene" id="scene">
+        <div class="gift-container" id="giftContainer">
+            <img src="giftbox.png" id="giftBox" alt="gift">
+            <img src="cloth.png" id="cloth" alt="cloth">
+        </div>
+    </div>
+
+    <div id="blackoutOverlay" class="blackout"></div>
+
+    <audio id="turnOnSound" preload="auto">
+        <source src="turnon.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="explodeSound" preload="auto">
+        <source src="explode.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="birthdaySound" preload="auto">
+        <source src="birthday.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="fuseSound" preload="auto">
+        <source src="fuse.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // DOM elements
+        const bodyEl = document.body;
+        const darkContent = document.getElementById('darkContent');
+        const sceneDiv = document.getElementById('scene');
+        const turnOnBtn = document.getElementById('turnOnBtn');
+        const giftContainer = document.getElementById('giftContainer');
+        const giftBox = document.getElementById('giftBox');
+        const cloth = document.getElementById('cloth');
+        const blackoutOverlay = document.getElementById('blackoutOverlay');
+        
+        const turnOnAudio = document.getElementById('turnOnSound');
+        const explodeAudio = document.getElementById('explodeSound');
+        const birthdayAudio = document.getElementById('birthdaySound');
+        const fuseAudio = document.getElementById('fuseSound');
+        
+        let clothRemoved = false;
+        let explosionTriggered = false;
+        let explosionInProgress = false;
+        
+        // Preload audio
+        function preloadAudios() {
+            turnOnAudio.load();
+            explodeAudio.load();
+            birthdayAudio.load();
+            if(fuseAudio) fuseAudio.load();
+        }
+        preloadAudios();
+        
+        // Turn on light
+        function turnOnLight() {
+            turnOnAudio.currentTime = 0;
+            turnOnAudio.play().catch(e => console.log("audio block"));
+            bodyEl.classList.add('light-on');
+            darkContent.style.display = 'none';
+            setTimeout(() => {
+                sceneDiv.classList.add('scene-show');
+            }, 400);
+        }
+        
+        // Cloth fade out
+        function startClothFade() {
+            if (clothRemoved) return;
+            cloth.classList.add('cloth-fadeout');
+            const onTransitionEnd = () => {
+                cloth.style.display = 'none';
+                cloth.removeEventListener('transitionend', onTransitionEnd);
+                clothRemoved = true;
+                giftBox.style.pointerEvents = 'auto';
+            };
+            cloth.addEventListener('transitionend', onTransitionEnd, { once: true });
+            setTimeout(() => {
+                if (!clothRemoved) {
+                    cloth.style.display = 'none';
+                    clothRemoved = true;
+                    giftBox.style.pointerEvents = 'auto';
+                }
+            }, 1000);
+        }
+        
+        // TNT IGNITE EFFECT (fuse sparks, glow, small smoke)
+        function igniteTNT(centerX, centerY, callback) {
+            // Create fuse sparks traveling outward
+            for (let i = 0; i < 40; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 20 + Math.random() * 90;
+                const dx = Math.cos(angle) * distance;
+                const dy = Math.sin(angle) * distance;
+                const spark = document.createElement('div');
+                spark.className = 'fuse-spark';
+                spark.style.left = centerX + 'px';
+                spark.style.top = centerY + 'px';
+                spark.style.setProperty('--dx', dx + 'px');
+                spark.style.setProperty('--dy', dy + 'px');
+                spark.style.background = `radial-gradient(circle, #ffaa33, #ff5500)`;
+                document.body.appendChild(spark);
+                setTimeout(() => spark.remove(), 600);
+            }
+            
+            // Glow effect around gift box
+            const glow = document.createElement('div');
+            glow.className = 'ignite-glow';
+            glow.style.left = centerX + 'px';
+            glow.style.top = centerY + 'px';
+            document.body.appendChild(glow);
+            setTimeout(() => glow.remove(), 800);
+            
+            // Smoke puffs
+            for (let s = 0; s < 8; s++) {
+                setTimeout(() => {
+                    const smoke = document.createElement('div');
+                    smoke.className = 'smoke-puff';
+                    smoke.style.left = centerX + (Math.random() - 0.5) * 40 + 'px';
+                    smoke.style.top = centerY + (Math.random() - 0.5) * 40 + 'px';
+                    document.body.appendChild(smoke);
+                    setTimeout(() => smoke.remove(), 1000);
+                }, s * 80);
+            }
+            
+            // Play fuse sizzle sound
+            if (fuseAudio) {
+                fuseAudio.currentTime = 0;
+                fuseAudio.play().catch(e => console.log("fuse sound error"));
+            } else {
+                // fallback beep using web audio
+                try {
+                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.frequency.value = 1200;
+                    gain.gain.value = 0.2;
+                    osc.start();
+                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
+                    osc.stop(audioCtx.currentTime + 0.5);
+                    audioCtx.resume();
+                } catch(e) {}
+            }
+            
+            // After 1 second, trigger explosion callback
+            setTimeout(callback, 1000);
+        }
+        
+        // EXPLOSION (full effect)
+        function triggerAdvancedExplosion(centerX, centerY) {
+            if (explosionInProgress) return;
+            explosionInProgress = true;
+            
+            explodeAudio.currentTime = 0;
+            explodeAudio.play().catch(e => console.warn("explode sound error"));
+            
+            document.body.classList.add('shake-screen');
+            setTimeout(() => {
+                document.body.classList.remove('shake-screen');
+            }, 500);
+            
+            // Core blast
+            const blastCore = document.createElement('div');
+            blastCore.className = 'explosion-core';
+            blastCore.style.left = centerX + 'px';
+            blastCore.style.top = centerY + 'px';
+            document.body.appendChild(blastCore);
+            
+            // Shockwave
+            const shock = document.createElement('div');
+            shock.className = 'shockwave';
+            shock.style.left = centerX + 'px';
+            shock.style.top = centerY + 'px';
+            document.body.appendChild(shock);
+            
+            // Particles
+            const particleCount = 180;
+            for (let i = 0; i < particleCount; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 80 + Math.random() * 350;
+                const dx = Math.cos(angle) * distance;
+                const dy = Math.sin(angle) * distance;
+                const particle = document.createElement('div');
+                particle.className = 'particle-blast';
+                particle.style.left = centerX + 'px';
+                particle.style.top = centerY + 'px';
+                particle.style.setProperty('--dx', dx + 'px');
+                particle.style.setProperty('--dy', dy + 'px');
+                particle.style.background = `hsl(${Math.random() * 60 + 20}, 100%, 55%)`;
+                particle.style.width = (Math.random() * 14 + 4) + 'px';
+                particle.style.height = (Math.random() * 14 + 4) + 'px';
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 1200);
+            }
+            
+            // Sparks
+            const sparkCount = 120;
+            for (let i = 0; i < sparkCount; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 50 + Math.random() * 380;
+                const dx = Math.cos(angle) * distance;
+                const dy = Math.sin(angle) * distance;
+                const spark = document.createElement('div');
+                spark.className = 'spark';
+                spark.style.left = centerX + 'px';
+                spark.style.top = centerY + 'px';
+                spark.style.setProperty('--dx', dx + 'px');
+                spark.style.setProperty('--dy', dy + 'px');
+                document.body.appendChild(spark);
+                setTimeout(() => spark.remove(), 1000);
+            }
+            
+            // Hide gift box
+            giftBox.style.transition = 'opacity 0.15s';
+            giftBox.style.opacity = '0';
+            giftContainer.style.pointerEvents = 'none';
+            
+            // Blackout after short delay
+            setTimeout(() => {
+                blackoutOverlay.classList.add('active');
+            }, 180);
+            
+            // Redirect after explosion finishes
+            setTimeout(() => {
+                window.location.href = "cake.html";
+            }, 1800);
+        }
+        
+        // Party poppers extra
+        function addPartyPoppers(centerX, centerY) {
+            const colors = ['#ff4d6d', '#ffb347', '#4d9eff', '#ff66cc', '#66ff99', '#ffcc00'];
+            for (let i = 0; i < 70; i++) {
+                const popper = document.createElement('div');
+                popper.style.position = 'fixed';
+                popper.style.width = '10px';
+                popper.style.height = '10px';
+                popper.style.background = colors[Math.floor(Math.random() * colors.length)];
+                popper.style.borderRadius = '2px';
+                popper.style.left = centerX + 'px';
+                popper.style.top = centerY + 'px';
+                popper.style.pointerEvents = 'none';
+                popper.style.zIndex = '10003';
+                const angle = Math.random() * Math.PI * 2;
+                const dist = 60 + Math.random() * 260;
+                const dx = Math.cos(angle) * dist;
+                const dy = Math.sin(angle) * dist;
+                popper.style.animation = `particleFly 0.9s ease-out forwards`;
+                popper.style.setProperty('--dx', dx + 'px');
+                popper.style.setProperty('--dy', dy + 'px');
+                document.body.appendChild(popper);
+                setTimeout(() => popper.remove(), 900);
+            }
+        }
+        
+        // Main: gift box click handler with TNT ignite delay
+        function onGiftBoxClick(event) {
+            event.stopPropagation();
+            if (!clothRemoved || explosionTriggered || explosionInProgress) return;
+            explosionTriggered = true;
+            
+            // Play birthday music
+            birthdayAudio.volume = 0.5;
+            birthdayAudio.currentTime = 0;
+            birthdayAudio.play().catch(e => console.log("birthday audio"));
+            
+            const rect = giftBox.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            // Start TNT ignite effect, then explode after 1 sec
+            igniteTNT(centerX, centerY, () => {
+                triggerAdvancedExplosion(centerX, centerY);
+                addPartyPoppers(centerX, centerY);
+            });
+        }
+        
+        // Click on cloth or container to remove cloth first
+        function onGiftContainerClick(event) {
+            if (!clothRemoved && !explosionTriggered) {
+                event.stopPropagation();
+                startClothFade();
+                giftContainer.style.pointerEvents = 'none';
+                setTimeout(() => {
+                    giftContainer.style.pointerEvents = 'auto';
+                }, 1000);
+            }
+        }
+        
+        // Attach listeners
+        giftContainer.addEventListener('click', onGiftContainerClick);
+        giftBox.addEventListener('click', onGiftBoxClick);
+        turnOnBtn.addEventListener('click', turnOnLight);
+        
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                turnOnBtn.classList.add('show');
+            }, 2000);
+        });
+        
+        // Preload images
+        const images = ['giftbox.png', 'cloth.png'];
+        images.forEach(src => {
+            const img = new Image();
+            img.src = src;
+        });
+        
+        // Enable audio on first touch
+        document.body.addEventListener('touchstart', function initAudio() {
+            turnOnAudio.load();
+            explodeAudio.load();
+            birthdayAudio.load();
+            if(fuseAudio) fuseAudio.load();
+            document.body.removeEventListener('touchstart', initAudio);
+        }, { once: true });
+        
+        // Prevent blackout scroll
+        blackoutOverlay.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+        blackoutOverlay.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
+    </script>
+</body>
+</html>

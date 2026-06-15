@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>starlight tulips · extra stems & large grass</title>
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --dark-bg: #0a0508;
+            --pink-blossom: #ff85b3;
+            --pink-deep: #ff4d7a;
+            --pink-glow: #ffb3cc;
+            --pink-soft: #ffc0d9;
+            --green-stem: #2c7840;
+            --green-leaf: #4cae5c;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #000000;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            overflow-x: hidden;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+            perspective: 1200px;
+        }
+
+        .night {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background-image: 
+                radial-gradient(ellipse at top, transparent 0%, #000000),
+                radial-gradient(ellipse at bottom, #000000, rgba(145, 80, 100, 0.12)),
+                repeating-linear-gradient(220deg, #000 0px, #000 19px, transparent 19px, transparent 22px),
+                repeating-linear-gradient(189deg, #000 0px, #000 19px, transparent 19px, transparent 22px),
+                repeating-linear-gradient(148deg, #000 0px, #000 19px, transparent 19px, transparent 22px),
+                linear-gradient(125deg, #1a0a12, #0c0508);
+            filter: blur(0.1vmin);
+        }
+
+        .title {
+            position: absolute;
+            top: 2rem;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-family: 'Pacifico', cursive;
+            font-size: clamp(2rem, 7vw, 4rem);
+            color: #ffe4f0;
+            text-shadow: 0 0 15px #ff99bb, 0 0 5px #ff4d7a;
+            letter-spacing: 2px;
+            z-index: 20;
+            pointer-events: none;
+            backdrop-filter: blur(2px);
+            opacity: 0;
+            transition: opacity 1.2s ease;
+        }
+
+        .flowers {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: auto;
+            width: 100vw;
+            height: auto;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 15;
+            transform: translateX(-8%) scale(0.85);
+            opacity: 0;
+            transition: opacity 1.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            pointer-events: none;
+        }
+
+        @media (max-width: 800px) { .flowers { transform: scale(1.2); } }
+        @media (max-width: 550px) { .flowers { transform: scale(0.8); } }
+        @media (max-width: 400px) { .flowers { transform: scale(0.9); } }
+
+        .flower {
+            position: relative;
+            transform-origin: bottom center;
+            z-index: 10;
+            --fl-speed: 0.9s;
+        }
+
+        .flower--1 { left: -30%; animation: moving-flower-1 4.5s ease-in-out infinite; }
+        .flower--2 { left: 5%; transform: translateX(-50%) rotate(4deg); animation: moving-flower-2 4.8s ease-in-out infinite; }
+        .flower--3 {
+            left: 40%;
+            transform: translateX(-50%) rotate(-6deg);
+            animation: moving-flower-3 4.2s ease-in-out infinite;
+        }
+
+        /* main tulip stem */
+        .flower__line {
+            position: relative;
+            height: 55vmin;
+            width: 1.8vmin;
+            background-image: linear-gradient(to left, rgba(0,0,0,0.2), transparent, rgba(255,255,255,0.1)),
+                              linear-gradient(to top, transparent 5%, var(--green-stem), var(--green-leaf));
+            box-shadow: inset 0 0 2px rgba(0,0,0,0.3);
+            animation: grow-flower-tree 2.4s backwards;
+            border-radius: 4px;
+        }
+        .flower--2 .flower__line { height: 62vmin; animation-delay: 0.2s; }
+        .flower--3 .flower__line { height: 52vmin; animation-delay: 0.4s; }
+
+        /* small leaves on the main stem */
+        .flower__line__leaf {
+            --w: 7vmin;
+            --h: calc(var(--w) + 2vmin);
+            position: absolute;
+            top: 20%;
+            left: 90%;
+            width: var(--w);
+            height: var(--h);
+            border-top-right-radius: var(--h);
+            border-bottom-left-radius: var(--h);
+            background-image: linear-gradient(to top, rgba(255,250,210,0.3), var(--green-leaf));
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .flower__line__leaf--1 { transform: rotate(70deg) rotateY(30deg); animation: blooming-leaf-right var(--fl-speed) 1.6s backwards; }
+        .flower__line__leaf--2 { top: 45%; transform: rotate(70deg) rotateY(30deg); animation: blooming-leaf-right var(--fl-speed) 1.4s backwards; }
+        .flower__line__leaf--3, .flower__line__leaf--4, .flower__line__leaf--6 {
+            border-top-right-radius: 0;
+            border-bottom-left-radius: 0;
+            border-top-left-radius: var(--h);
+            border-bottom-right-radius: var(--h);
+            left: -460%;
+            top: 12%;
+            transform: rotate(-70deg) rotateY(30deg);
+            animation: blooming-leaf-left var(--fl-speed) 1.2s backwards;
+        }
+        .flower__line__leaf--4 { top: 40%; animation-delay: 1s; }
+        .flower__line__leaf--5 { top: 0; transform-origin: left; transform: rotate(70deg) rotateY(30deg) scale(0.6); animation: blooming-leaf-right var(--fl-speed) 1.8s backwards; }
+        .flower__line__leaf--6 { top: -2%; left: -450%; transform-origin: right; transform: rotate(-70deg) rotateY(30deg) scale(0.6); animation: blooming-leaf-left var(--fl-speed) 2s backwards; }
+
+        /* NEW: additional standalone stem+leaf structures (no flower) */
+        .extra-stem {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 1.2vmin;
+            height: 18vmin;
+            background: linear-gradient(to top, #2c7840, #4cae5c);
+            border-radius: 2px;
+            transform-origin: bottom center;
+            animation: growExtraStem 0.8s ease-out backwards;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .extra-stem__leaf {
+            position: absolute;
+            width: 5vmin;
+            height: 7vmin;
+            background: linear-gradient(135deg, #4cae5c, #2c7840);
+            border-radius: 60% 40% 40% 60%;
+            transform-origin: left center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        .extra-stem--1 { left: -18vmin; transform: rotate(-15deg); animation-delay: 0.1s; }
+        .extra-stem--2 { left: 12vmin; transform: rotate(10deg); animation-delay: 0.2s; }
+        .extra-stem--3 { left: -25vmin; transform: rotate(-25deg); animation-delay: 0.15s; }
+        .extra-stem--4 { left: 20vmin; transform: rotate(18deg); animation-delay: 0.25s; }
+
+        .extra-stem__leaf--1 { top: -2vmin; left: -3vmin; transform: rotate(-40deg); }
+        .extra-stem__leaf--2 { top: 6vmin; left: -2vmin; transform: rotate(-20deg) scale(0.8); }
+        .extra-stem__leaf--3 { top: -1vmin; right: -3vmin; transform: rotate(35deg) scaleX(-1); }
+        .extra-stem__leaf--4 { top: 5vmin; right: -2vmin; transform: rotate(15deg) scaleX(-0.8); }
+
+        @keyframes growExtraStem {
+            0% { height: 0; opacity: 0; transform: scaleY(0); }
+            100% { height: 18vmin; opacity: 1; transform: scaleY(1); }
+        }
+
+        /* floating light particles (unchanged) */
+        .flower__light {
+            position: absolute;
+            bottom: 0vmin;
+            width: 1.2vmin;
+            height: 1.2vmin;
+            background-color: #ffaac2;
+            border-radius: 50%;
+            filter: blur(0.2vmin);
+            animation: light-ans 4s infinite backwards;
+            box-shadow: 0 0 5px #ff88aa;
+        }
+        .flower__light:nth-child(odd) { background-color: #ff7da2; }
+
+        /* tulip petals (unchanged) */
+        .tulip-petal {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            width: 10vmin;
+            height: 14vmin;
+            border-top-left-radius: 100%;
+            -webkit-mask-image: linear-gradient(to top, transparent 20%, #000);
+            mask-image: linear-gradient(to top, transparent 20%, #000);
+            background: linear-gradient(180deg, #ffd4e3 0%, #ff85b3 40%, #ff4d7a 100%);
+            box-shadow: inset 0 0 2vmin rgba(255,255,255,0.25), 0 0 2vmin rgba(255,120,170,0.35);
+            transform-origin: bottom center;
+            pointer-events: none;
+        }
+        .tulip-petal--center {
+            z-index: 3;
+            transform: translateX(-59%) scale(1);
+        }
+        .tulip-petal--left {
+            z-index: 2;
+            transform: translateX(-95%) rotate(10deg) scale(0.92) scaleX(-1);
+        }
+        .tulip-petal--right {
+            z-index: 1;
+            transform: translateX(-5%) rotate(-20deg) scale(0.92) scaleX(1);
+        }
+        .flower:hover .tulip-petal {
+            filter: brightness(1.02) drop-shadow(0 0 3px #ff90b0);
+        }
+
+        /* animations */
+        @keyframes moving-flower-1 { 0%,100%{ transform: rotate(2deg); } 50%{ transform: rotate(-3deg); } }
+        @keyframes moving-flower-2 { 0%,100%{ transform: translateX(-50%) rotate(4deg); } 50%{ transform: translateX(-50%) rotate(1deg); } }
+        @keyframes moving-flower-3 { 0%,100%{ transform: translateX(-88%) rotate(-6deg); } 50%{ transform: translateX(-88%) rotate(-10deg) rotateY(-3deg); } }
+        @keyframes blooming-leaf-right { 0% { transform-origin: left; transform: rotate(70deg) rotateY(30deg) scale(0); } }
+        @keyframes blooming-leaf-left { 0% { transform-origin: right; transform: rotate(-70deg) rotateY(30deg) scale(0); } }
+        @keyframes grow-flower-tree { 0% { height: 0; border-radius: 2vmin; opacity: 0; } 100% { opacity: 1; } }
+        @keyframes light-ans {
+            0% { opacity: 0; transform: translateY(0vmin); }
+            25% { opacity: 1; transform: translateY(-5vmin) translateX(-2vmin); }
+            50% { opacity: 1; transform: translateY(-15vmin) translateX(2vmin); filter: blur(0.2vmin); }
+            75% { transform: translateY(-22vmin) translateX(-2vmin); filter: blur(0.2vmin); }
+            100% { transform: translateY(-34vmin); opacity: 0; filter: blur(1.5vmin); }
+        }
+
+        .instruction {
+            position: fixed;
+            bottom: 18px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: rgba(200, 230, 255, 0.9);
+            font-size: 14px;
+            font-family: monospace;
+            letter-spacing: 1px;
+            pointer-events: none;
+            z-index: 30;
+            text-shadow: 0 0 6px #88aaff;
+            background: transparent;
+            opacity: 0;
+            transition: opacity 1.2s ease;
+        }
+
+        #fireflyCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+            display: block;
+        }
+
+        .soil-line {
+            position: absolute;
+            height: 6px;
+            background: linear-gradient(90deg, #f9f3e0, #ffffff, #fff5e6);
+            box-shadow: 0 0 22px 6px rgba(255, 245, 200, 0.9), 0 0 8px 2px #ffe6aa;
+            border-radius: 12px;
+            width: 0;
+            transition: width 1.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transform-origin: left center;
+            pointer-events: none;
+            z-index: 10010;
+        }
+        .soil-line.left-line { left: 50%; transform-origin: left center; }
+        .soil-line.right-line { right: 50%; transform-origin: right center; }
+
+        .arrival-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            transition: opacity 1.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .arrival-seed {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #ffffff, #ffe6f0);
+            border-radius: 50%;
+            box-shadow: 0 0 28px 8px #ffe0f0, 0 0 12px 3px #ffaacc;
+            will-change: left, top, width, height;
+            pointer-events: none;
+            filter: blur(0.4px);
+        }
+        @keyframes seedPop {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .arrival-seed.pop { animation: seedPop 0.5s cubic-bezier(0.34, 1.2, 0.64, 1) forwards; }
+
+        /* ========== ENLARGED SVG GRASS – MORE INDIVIDUAL, LARGER ========== */
+        .grass-container {
+            position: absolute;
+            bottom: -2vmin;          /* overlaps soil line */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 36vmin;           /* wider spread */
+            height: 24vmin;          /* taller grass area */
+            pointer-events: none;
+            z-index: 7;
+        }
+        .grass-svg {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+        .grass-blade-svg {
+            animation: growGrass 0.6s ease-out backwards;
+        }
+        @keyframes growGrass {
+            0% { transform: scaleY(0); opacity: 0; }
+            100% { transform: scaleY(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+<div class="night"></div>
+<canvas id="fireflyCanvas"></canvas>
+<div class="title">✦ The Garden Of Wishes ✦</div>
+
+<div class="flowers">
+    <!-- ==================== TULIP 1 (left) ==================== -->
+    <div class="flower flower--1">
+        <div class="flower__line">
+            <div class="flower__line__leaf flower__line__leaf--1"></div>
+            <div class="flower__line__leaf flower__line__leaf--2"></div>
+            <div class="flower__line__leaf flower__line__leaf--3"></div>
+            <div class="flower__line__leaf flower__line__leaf--4"></div>
+            <div class="flower__line__leaf flower__line__leaf--5"></div>
+            <div class="flower__line__leaf flower__line__leaf--6"></div>
+            <div class="tulip-petal tulip-petal--left"></div>
+            <div class="tulip-petal tulip-petal--center"></div>
+            <div class="tulip-petal tulip-petal--right"></div>
+        </div>
+
+        <!-- additional standalone stems with leaves only -->
+        <div class="extra-stem extra-stem--1">
+            <div class="extra-stem__leaf extra-stem__leaf--1"></div>
+            <div class="extra-stem__leaf extra-stem__leaf--2"></div>
+        </div>
+        <div class="extra-stem extra-stem--2">
+            <div class="extra-stem__leaf extra-stem__leaf--3"></div>
+            <div class="extra-stem__leaf extra-stem__leaf--4"></div>
+        </div>
+        <div class="extra-stem extra-stem--3">
+            <div class="extra-stem__leaf extra-stem__leaf--1"></div>
+        </div>
+        <div class="extra-stem extra-stem--4">
+            <div class="extra-stem__leaf extra-stem__leaf--3"></div>
+        </div>
+
+        <!-- LARGE, INDIVIDUAL GRASS (12 distinct blades) -->
+        <div class="grass-container">
+            <svg class="grass-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <!-- each path is individually curved, thick at bottom (near y=100), narrow at top (y=5-20) -->
+                <path class="grass-blade-svg" d="M50,100 C35,65 15,35 5,12 C12,18 22,30 30,48 C38,65 45,82 50,98 Z" fill="#4cae5c" opacity="0.9" style="animation-delay:0.02s;"/>
+                <path class="grass-blade-svg" d="M50,100 C60,70 75,45 88,18 C80,22 72,38 66,55 C60,72 54,86 50,100 Z" fill="#3d9e4d" opacity="0.85" style="animation-delay:0.07s;"/>
+                <path class="grass-blade-svg" d="M50,100 C28,58 8,28 2,8 C7,14 18,26 26,44 C34,62 43,82 49,96 Z" fill="#5cb85c" opacity="0.95" style="animation-delay:0.12s;"/>
+                <path class="grass-blade-svg" d="M50,100 C70,68 90,42 98,15 C92,20 82,34 74,52 C66,70 57,88 50,100 Z" fill="#2c7840" opacity="0.8" style="animation-delay:0.17s;"/>
+                <path class="grass-blade-svg" d="M50,100 C42,72 28,52 15,30 C22,36 32,50 40,68 C45,82 48,92 50,100 Z" fill="#4cae5c" opacity="0.9" style="animation-delay:0.22s;"/>
+                <path class="grass-blade-svg" d="M50,100 C58,78 72,58 85,32 C78,38 70,52 64,68 C58,84 54,94 50,100 Z" fill="#3d9e4d" opacity="0.85" style="animation-delay:0.27s;"/>
+                <path class="grass-blade-svg" d="M50,100 C38,62 18,32 6,10 C12,16 22,28 30,46 C38,64 45,84 49,97 Z" fill="#5cb85c" opacity="0.9" style="animation-delay:0.32s;"/>
+                <path class="grass-blade-svg" d="M50,100 C62,72 82,48 92,20 C86,26 76,40 68,58 C60,76 54,90 50,100 Z" fill="#2c7840" opacity="0.85" style="animation-delay:0.37s;"/>
+                <path class="grass-blade-svg" d="M50,100 C48,68 32,45 18,25 C24,30 34,44 42,62 C47,78 49,92 50,100 Z" fill="#4cae5c" opacity="0.9" style="animation-delay:0.42s;"/>
+                <path class="grass-blade-svg" d="M50,100 C52,72 68,50 82,28 C76,34 66,48 60,66 C55,82 52,94 50,100 Z" fill="#3d9e4d" opacity="0.85" style="animation-delay:0.47s;"/>
+                <path class="grass-blade-svg" d="M50,100 C32,55 12,28 3,6 C9,12 20,24 28,42 C36,60 44,80 49,96 Z" fill="#5cb85c" opacity="0.95" style="animation-delay:0.52s;"/>
+                <path class="grass-blade-svg" d="M50,100 C68,60 88,35 97,10 C92,16 82,30 74,48 C66,66 57,84 50,100 Z" fill="#2c7840" opacity="0.8" style="animation-delay:0.57s;"/>
+            </svg>
+        </div>
+
+        <div class="flower__light flower__light--1"></div><div class="flower__light flower__light--2"></div>
+        <div class="flower__light flower__light--3"></div><div class="flower__light flower__light--4"></div>
+        <div class="flower__light flower__light--5"></div><div class="flower__light flower__light--6"></div>
+    </div>
+
+    <!-- ==================== TULIP 2 (center) ==================== -->
+    <div class="flower flower--2">
+        <div class="flower__line">
+            <div class="flower__line__leaf flower__line__leaf--1"></div>
+            <div class="flower__line__leaf flower__line__leaf--2"></div>
+            <div class="flower__line__leaf flower__line__leaf--3"></div>
+            <div class="flower__line__leaf flower__line__leaf--4"></div>
+            <div class="flower__line__leaf flower__line__leaf--5"></div>
+            <div class="flower__line__leaf flower__line__leaf--6"></div>
+            <div class="tulip-petal tulip-petal--left"></div>
+            <div class="tulip-petal tulip-petal--center"></div>
+            <div class="tulip-petal tulip-petal--right"></div>
+        </div>
+        <div class="extra-stem extra-stem--1">
+            <div class="extra-stem__leaf extra-stem__leaf--1"></div>
+            <div class="extra-stem__leaf extra-stem__leaf--2"></div>
+        </div>
+        <div class="extra-stem extra-stem--2">
+            <div class="extra-stem__leaf extra-stem__leaf--3"></div>
+            <div class="extra-stem__leaf extra-stem__leaf--4"></div>
+        </div>
+        <div class="extra-stem extra-stem--3">
+            <div class="extra-stem__leaf extra-stem__leaf--1"></div>
+        </div>
+        <div class="extra-stem extra-stem--4">
+            <div class="extra-stem__leaf extra-stem__leaf--3"></div>
+        </div>
+        <div class="grass-container">
+            <svg class="grass-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path class="grass-blade-svg" d="M50,100 C42,68 22,42 10,18 C16,24 26,36 34,54 C42,72 47,88 50,100 Z" fill="#4cae5c" opacity="0.9" style="animation-delay:0.02s;"/>
+                <path class="grass-blade-svg" d="M50,100 C58,72 72,50 85,25 C78,30 68,44 62,62 C56,78 52,90 50,100 Z" fill="#3d9e4d" opacity="0.85" style="animation-delay:0.07s;"/>
+                <path class="grass-blade-svg" d="M50,100 C30,55 12,30 2,8 C8,14 18,26 28,44 C38,62 45,82 49,96 Z" fill="#5cb85c" opacity="0.95" style="animation-delay:0.12s;"/>
+                <path class="grass-blade-svg" d="M50,100 C68,68 88,42 96,14 C90,20 80,34 72,52 C64,70 56,86 50,100 Z" fill="#2c7840" opacity="0.8" style="animation-delay:0.17s;"/>
+                <path class="grass-blade-svg" d="M50,100 C45,70 32,48 20,28 C26,34 36,48 44,66 C48,82 49,94 50,100 Z" fill="#4cae5c" opacity="0.9" style="animation-delay:0.22s;"/>
+                <path class="grass-blade-svg" d="M50,100 C55,76 68,56 80,32 C74,38 64,52 58,68 C54,84 52,94 50,100 Z" fill="#3d9e4d" opacity="0.85" style="animation-delay:0.27s;"/>
+                <path class="grass-blade-svg" d="M50,100 C35,60 16,34 4,12 C10,18 20,30 30,48 C40,66 46,84 49,97 Z" fill="#5cb85c" opacity="0.9" style="animation-delay:0.32s;"/>
+                <path class="grass-blade-svg" d="M50,100 C65,65 84,40 94,14 C88,20 78,34 70,52 C62,70 55,86 50,100 Z" fill="#2c7840" opacity="0.85" style="animation-delay:0.37s;"/>
+                <path class="grass-blade-svg" d="M50,100 C48,66 36,44 22,26 C28,32 38,46 44,64 C48,80 49,92 50,100 Z" fill="#4cae5c" opacity="0.9" style="animation-delay:0.42s;"/>
+                <path class="grass-blade-svg" d="M50,100 C52,74 64,54 78,30 C72,36 62,50 56,68 C53,82 51,94 50,100 Z" fill="#3d9e4d" opacity="0.85" style="animation-delay:0.47s;"/>
+                <path class="grass-blade-svg" d="M50,100 C38,58 18,30 6,8 C12,14 22,26 30,44 C38,62 45,82 49,96 Z" fill="#5cb85c" opacity="0.95" style="animation-delay:0.52s;"/>
+                <path class="grass-blade-svg" d="M50,100 C62,70 82,45 92,18 C86,24 76,38 68,56 C60,74 54,90 50,100 Z" fill="#2c7840" opacity="0.8" style="animation-delay:0.57s;"/>
+            </svg>
+        </div>
+        <div class="flower__light flower__light--1"></div><div class="flower__light flower__light--2"></div>
+        <div class="flower__light flower__light--3"></div><div class="flower__light flower__light--4"></div>
+        <div class="flower__light flower__light--5"></div><div class="flower__light flower__light--6"></div>
+    </div>
+
+    <!-- ==================== TULIP 3 (right) ==================== -->
+    <div class="flower flower--3">
+        <div class="flower__line">
+            <div class="flower__line__leaf flower__line__leaf--1"></div>
+            <div class="flower__line__leaf flower__line__leaf--2"></div>
+            <div class="flower__line__leaf flower__line__leaf--3"></div>
+            <div class="flower__line__leaf flower__line__leaf--4"></div>
+            <div class="flower__line__leaf flower__line__leaf--5"></div>
+            <div class="flower__line__leaf flower__line__leaf--6"></div>
+            <div class="tulip-petal tulip-petal--left"></div>
+            <div class="tulip-petal tulip-petal--center"></div>
+            <div class="tulip-petal tulip-petal--right"></div>
+        </div>
+        <div class="extra-stem extra-stem--1">
+            <div class="extra-stem__leaf extra-stem__leaf--1"></div>
+            <div class="extra-stem__leaf extra-stem__leaf--2"></div>
+        </div>
+        <div class="extra-stem extra-stem--2">
+            <div class="extra-stem__leaf extra-stem__leaf--3"></div>
+            <div class="extra-stem__leaf extra-stem__leaf--4"></div>
+        </div>
+        <div class="extra-stem extra-stem--3">
+            <div class="extra-stem__leaf extra-stem__leaf--1"></div>
+        </div>
+        <div class="extra-stem extra-stem--4">
+            <div class="extra-stem__leaf extra-stem__leaf--3"></div>
+        </div>
+        <div class="grass-container">
+            <svg class="grass-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path class="grass-blade-svg" d="M50,100 C40,66 18,38 8,14 C14,20 24,32 32,50 C40,68 46,86 50,100 Z" fill="#4cae5c" opacity="0.9" style="animation-delay:0.02s;"/>
+                <path class="grass-blade-svg" d="M50,100 C60,74 75,52 88,26 C82,32 72,46 66,62 C60,78 54,90 50,100 Z" fill="#3d9e4d" opacity="0.85" style="animation-delay:0.07s;"/>
+                <path class="grass-blade-svg" d="M50,100 C32,56 10,28 2,6 C8,12 18,24 28,42 C38,60 45,80 49,96 Z" fill="#5cb85c" opacity="0.95" style="animation-delay:0.12s;"/>
+                <path class="grass-blade-svg" d="M50,100 C68,70 86,44 95,16 C88,22 78,36 70,54 C62,72 55,88 50,100 Z" fill="#2c7840" opacity="0.8" style="animation-delay:0.17s;"/>
+                <path class="grass-blade-svg" d="M50,100 C44,68 30,46 18,26 C24,32 34,46 42,64 C47,80 49,92 50,100 Z" fill="#4cae5c" opacity="0.9" style="animation-delay:0.22s;"/>
+                <path class="grass-blade-svg" d="M50,100 C56,78 70,58 84,34 C78,40 68,54 62,70 C57,86 53,94 50,100 Z" fill="#3d9e4d" opacity="0.85" style="animation-delay:0.27s;"/>
+                <path class="grass-blade-svg" d="M50,100 C36,60 16,32 5,10 C11,16 21,28 30,46 C39,64 46,84 49,97 Z" fill="#5cb85c" opacity="0.9" style="animation-delay:0.32s;"/>
+                <path class="grass-blade-svg" d="M50,100 C64,66 84,42 93,16 C88,22 78,36 70,54 C62,72 55,88 50,100 Z" fill="#2c7840" opacity="0.85" style="animation-delay:0.37s;"/>
+                <path class="grass-blade-svg" d="M50,100 C46,68 34,46 20,28 C26,34 36,48 44,66 C48,82 49,94 50,100 Z" fill="#4cae5c" opacity="0.9" style="animation-delay:0.42s;"/>
+                <path class="grass-blade-svg" d="M50,100 C54,76 66,56 80,32 C74,38 64,52 58,68 C55,84 52,94 50,100 Z" fill="#3d9e4d" opacity="0.85" style="animation-delay:0.47s;"/>
+                <path class="grass-blade-svg" d="M50,100 C34,58 14,30 4,8 C10,14 20,26 30,44 C40,62 46,82 49,96 Z" fill="#5cb85c" opacity="0.95" style="animation-delay:0.52s;"/>
+                <path class="grass-blade-svg" d="M50,100 C66,70 86,46 96,18 C90,24 80,38 72,56 C64,74 56,90 50,100 Z" fill="#2c7840" opacity="0.8" style="animation-delay:0.57s;"/>
+            </svg>
+        </div>
+        <div class="flower__light flower__light--1"></div><div class="flower__light flower__light--2"></div>
+        <div class="flower__light flower__light--3"></div><div class="flower__light flower__light--4"></div>
+        <div class="flower__light flower__light--5"></div><div class="flower__light flower__light--6"></div>
+    </div>
+</div>
+
+<div class="instruction"></div>
+
+<!-- FIREFLIES + STARS (unchanged) -->
+<script>
+    (function() {
+        const canvas = document.getElementById('fireflyCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let fireflies = [];
+        let stars = [];
+        let animationId = null;
+
+        const warmColors = ['#FFB347', '#FFA559', '#FF8C42', '#FFD966', '#F4A261', '#E9C46A', '#FFB347', '#FF9966'];
+
+        class Firefly {
+            constructor(x, y, radius, speedX, speedY, color, alpha) {
+                this.x = x; this.y = y; this.radius = radius; this.speedX = speedX; this.speedY = speedY;
+                this.color = color; this.alpha = alpha; this.pulse = Math.random() * Math.PI * 2;
+                this.pulseSpeed = 0.02 + Math.random() * 0.03;
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.x < -50) this.x = width + 50;
+                if (this.x > width + 50) this.x = -50;
+                if (this.y < -50) this.y = height + 50;
+                if (this.y > height + 50) this.y = -50;
+                this.pulse += this.pulseSpeed;
+                this.speedX += (Math.random() - 0.5) * 0.03;
+                this.speedY += (Math.random() - 0.5) * 0.03;
+                this.speedX = Math.min(Math.max(this.speedX, -0.8), 0.8);
+                this.speedY = Math.min(Math.max(this.speedY, -0.8), 0.8);
+            }
+            draw(ctx) {
+                const glowIntensity = 0.5 + Math.sin(this.pulse) * 0.4;
+                const currentAlpha = Math.min(this.alpha * (0.6 + glowIntensity * 0.5), 0.9);
+                ctx.save();
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = `rgba(255, 180, 70, ${0.7 + glowIntensity * 0.3})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius * (0.8 + glowIntensity * 0.3), 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = currentAlpha;
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius * 0.5, 0, Math.PI * 2);
+                ctx.fillStyle = '#FFF5C4';
+                ctx.globalAlpha = currentAlpha * 0.9;
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        class Star {
+            constructor(x, y, radius, alpha, twinkleSpeed) {
+                this.x = x; this.y = y; this.radius = radius;
+                this.alpha = alpha;
+                this.twinkleSpeed = twinkleSpeed;
+                this.phase = Math.random() * Math.PI * 2;
+            }
+            update() { this.phase += this.twinkleSpeed; }
+            draw(ctx) {
+                const intensity = 0.5 + Math.sin(this.phase) * 0.4;
+                const currentAlpha = Math.min(this.alpha * (0.5 + intensity * 0.5), 0.85);
+                ctx.save();
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = `rgba(255, 255, 200, ${0.5 + intensity * 0.3})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 250, 210, ${currentAlpha})`;
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius * 0.4, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${currentAlpha + 0.2})`;
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function initParticles(w, h) {
+            const fireflyCount = 30;
+            fireflies = [];
+            for (let i = 0; i < fireflyCount; i++) {
+                const radius = 3 + Math.random() * 5;
+                const x = Math.random() * w;
+                const y = Math.random() * h;
+                const speedX = (Math.random() - 0.5) * 0.5;
+                const speedY = (Math.random() - 0.5) * 0.5;
+                const color = warmColors[Math.floor(Math.random() * warmColors.length)];
+                const alpha = 0.5 + Math.random() * 0.4;
+                fireflies.push(new Firefly(x, y, radius, speedX, speedY, color, alpha));
+            }
+            const starCount = 30;
+            stars = [];
+            for (let i = 0; i < starCount; i++) {
+                const radius = 1.5 + Math.random() * 3;
+                const x = Math.random() * w;
+                const y = Math.random() * h;
+                const alpha = 0.3 + Math.random() * 0.5;
+                const twinkleSpeed = 0.005 + Math.random() * 0.015;
+                stars.push(new Star(x, y, radius, alpha, twinkleSpeed));
+            }
+        }
+
+        function resizeCanvasAndParticles() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            initParticles(width, height);
+        }
+
+        function animate() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, width, height);
+            for (let star of stars) { star.update(); star.draw(ctx); }
+            for (let fly of fireflies) { fly.update(); fly.draw(ctx); }
+            animationId = requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => { resizeCanvasAndParticles(); });
+        resizeCanvasAndParticles();
+        animate();
+    })();
+</script>
+
+<!-- SEED ARRIVAL & SOIL LINE (shifted down 2%) -->
+<script>
+    (function groundedBloom() {
+        const overlay = document.createElement('div');
+        overlay.className = 'arrival-overlay';
+        document.body.appendChild(overlay);
+        const seed = document.createElement('div');
+        seed.className = 'arrival-seed';
+        overlay.appendChild(seed);
+        const flowersContainer = document.querySelector('.flowers');
+        const centerX = window.innerWidth / 2;
+        seed.style.opacity = '0';
+        seed.style.left = `${centerX - 10}px`;
+        seed.style.top = `${window.innerHeight/2 - 10}px`;
+        seed.style.width = '20px';
+        seed.style.height = '20px';
+        setTimeout(() => {
+            seed.style.opacity = '1';
+            seed.classList.add('pop');
+            setTimeout(() => {
+                seed.classList.remove('pop');
+                let startFall = null;
+                const fallDuration = 1300;
+                const startSize = 20;
+                const endSize = 5;
+                const shiftDown = 0.02 * window.innerHeight;
+                const finalGroundY = window.innerHeight - 150 + shiftDown;
+                function fallAndShrink(timestamp) {
+                    if (!startFall) startFall = timestamp;
+                    const elapsed = timestamp - startFall;
+                    let progress = Math.min(1, elapsed / fallDuration);
+                    const easeOut = 1 - Math.pow(1 - progress, 3);
+                    const currentY = (window.innerHeight/2) + (finalGroundY - window.innerHeight/2) * easeOut;
+                    const currentSize = startSize - (startSize - endSize) * easeOut;
+                    seed.style.top = `${currentY - currentSize/2}px`;
+                    seed.style.width = `${currentSize}px`;
+                    seed.style.height = `${currentSize}px`;
+                    const glowIntensity = 1 - easeOut * 0.4;
+                    seed.style.boxShadow = `0 0 ${22 * glowIntensity}px ${8 * glowIntensity}px #ffe0f0, 0 0 12px 3px #ffaacc`;
+                    if (progress < 1) {
+                        requestAnimationFrame(fallAndShrink);
+                    } else {
+                        seed.remove();
+                        createPermanentSoilLineAndBloom(finalGroundY);
+                        flowersContainer.style.bottom = `${window.innerHeight - finalGroundY}px`;
+                    }
+                }
+                requestAnimationFrame(fallAndShrink);
+            }, 900);
+        }, 1000);
+        function createPermanentSoilLineAndBloom(groundYPos) {
+            const leftLine = document.createElement('div');
+            leftLine.className = 'soil-line left-line';
+            const rightLine = document.createElement('div');
+            rightLine.className = 'soil-line right-line';
+            leftLine.style.top = `${groundYPos - 3}px`;
+            rightLine.style.top = `${groundYPos - 3}px`;
+            leftLine.style.width = '0px';
+            rightLine.style.width = '0px';
+            document.body.appendChild(leftLine);
+            document.body.appendChild(rightLine);
+            getComputedStyle(leftLine).width;
+            getComputedStyle(rightLine).width;
+            const leftMax = window.innerWidth / 2;
+            const rightMax = window.innerWidth - leftMax;
+            leftLine.style.width = `${leftMax}px`;
+            rightLine.style.width = `${rightMax}px`;
+            let soilExpanded = false;
+            const onSoilEnd = () => {
+                if (soilExpanded) return;
+                soilExpanded = true;
+                flowersContainer.style.opacity = '1';
+                setTimeout(() => {
+                    document.querySelector('.title').style.opacity = '1';
+                    document.querySelector('.instruction').style.opacity = '1';
+                    setTimeout(() => {
+                        overlay.style.opacity = '0';
+                        setTimeout(() => { if (overlay.parentNode) overlay.remove(); }, 1500);
+                    }, 300);
+                }, 600);
+            };
+            let transitionFinished = false;
+            const onTransitionEnd = (e) => {
+                if (e.target === leftLine || e.target === rightLine) {
+                    if (!transitionFinished) {
+                        transitionFinished = true;
+                        leftLine.removeEventListener('transitionend', onTransitionEnd);
+                        rightLine.removeEventListener('transitionend', onTransitionEnd);
+                        onSoilEnd();
+                    }
+                }
+            };
+            leftLine.addEventListener('transitionend', onTransitionEnd);
+            rightLine.addEventListener('transitionend', onTransitionEnd);
+            setTimeout(() => {
+                if (!transitionFinished) {
+                    transitionFinished = true;
+                    onSoilEnd();
+                }
+            }, 1400);
+        }
+        document.querySelector('.title').style.opacity = '0';
+        document.querySelector('.flowers').style.opacity = '0';
+        document.querySelector('.instruction').style.opacity = '0';
+        window.addEventListener('resize', () => {
+            const lines = document.querySelectorAll('.soil-line');
+            if (lines.length === 2) {
+                const currentGround = parseFloat(lines[0].style.top) + 3;
+                if (!isNaN(currentGround)) {
+                    const newBottom = window.innerHeight - currentGround;
+                    if (flowersContainer) flowersContainer.style.bottom = `${newBottom}px`;
+                }
+            }
+        });
+    })();
+</script>
+</body>
+</html>

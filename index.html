@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>A Special Surprise</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@400;600&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { min-height: 100vh; background: linear-gradient(135deg, #1a0505 0%, #2d0a0a 50%, #1a0000 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; overflow: hidden; position: relative; }
+        
+        .star-bg { position: absolute; font-size: 15px; color: #c0c0c0; opacity: 0; z-index: 1; }
+        .star-glow-max { animation: twinkleMax 3s ease-in-out infinite; text-shadow: 0 0 15px #ffffff, 0 0 30px #d4d4d4, 0 0 50px #a8a8a8; }
+        .star-glow-normal { animation: twinkleNormal 3.5s ease-in-out infinite; text-shadow: 0 0 8px #d4d4d4, 0 0 15px #909090; }
+        @keyframes twinkleMax { 0%, 100% { opacity: 0.3; transform: scale(0.85); } 50% { opacity: 1; transform: scale(1.1); } }
+        @keyframes twinkleNormal { 0%, 100% { opacity: 0.25; transform: scale(0.8); } 50% { opacity: 0.7; transform: scale(1); } }
+        
+        .glow { position: absolute; width: 500px; height: 500px; background: radial-gradient(circle, rgba(255,0,0,0.4) 0%, transparent 70%); border-radius: 50%; animation: glowPulse 3s ease-in-out infinite; }
+        @keyframes glowPulse { 0%, 100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.3); opacity: 1; } }
+        
+        .content { z-index: 10; text-align: center; padding: 40px; }
+        .date { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #ff6b6b; letter-spacing: 8px; margin-bottom: 20px; text-transform: uppercase; text-shadow: 0 0 20px rgba(255,107,107,0.8); }
+        .title { font-family: 'Playfair Display', serif; font-size: 3.5rem; color: #ff4d6d; margin-bottom: 15px; text-shadow: 0 0 40px rgba(255,77,109,0.9); }
+        .subtitle { font-size: 1.8rem; color: #ffb3c1; margin-bottom: 60px; font-style: italic; text-shadow: 0 0 15px rgba(255,179,193,0.7); }
+        .hint { color: #ffb3c1; font-size: 1.1rem; margin-bottom: 20px; letter-spacing: 3px; }
+        
+        .dot { display: inline-block; width: 8px; height: 8px; background: #ff6b6b; border-radius: 50%; margin: 0 3px; box-shadow: 0 0 10px #ff6b6b; }
+        .dot1 { animation: dotJump 1.4s ease-in-out infinite; }
+        .dot2 { animation: dotJump 1.4s ease-in-out infinite; animation-delay: 0.2s; }
+        .dot3 { animation: dotJump 1.4s ease-in-out infinite; animation-delay: 0.4s; }
+        @keyframes dotJump { 0%, 100% { transform: translateY(0); opacity: 0.4; } 50% { transform: translateY(-10px); opacity: 1; } }
+        
+        .frame { border: 1px solid rgba(255,150,170,0.4); padding: 60px 80px; position: relative; }
+        .frame::before, .frame::after { content: '❦'; position: absolute; font-size: 2rem; color: #ff6b6b; text-shadow: 0 0 15px rgba(255,107,107,0.8); }
+        .frame::before { top: 10px; left: 20px; }
+        .frame::after { bottom: 10px; right: 20px; }
+        
+        .question { font-size: 1.5rem; color: rgba(255,150,170,0.6); margin-bottom: 15px; animation: questionMove 2s ease-in-out infinite; }
+        @keyframes questionMove { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        
+        .reveal-btn { background: linear-gradient(135deg, #1a0505, #2d0a0a); color: #ff2d55; border: 2px solid rgba(255,45,85,0.5); padding: 25px 70px; font-size: 1.5rem; font-family: 'Cormorant Garamond', serif; letter-spacing: 4px; border-radius: 50px; cursor: pointer; text-transform: uppercase; animation: btnPulse 2s ease-in-out infinite; box-shadow: 0 0 30px rgba(255,45,85,0.4); }
+        @keyframes btnPulse { 0%, 100% { box-shadow: 0 0 30px rgba(255,45,85,0.4); } 50% { box-shadow: 0 0 50px rgba(255,45,85,0.7); } }
+        .reveal-btn:hover { transform: scale(1.05); box-shadow: 0 0 60px rgba(255,45,85,0.8); }
+        
+        .reveal-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; align-items: center; justify-content: center; flex-direction: column; z-index: 1000; }
+        .tap-instruction { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #ff6b6b; letter-spacing: 4px; margin-bottom: 30px; opacity: 0; transition: opacity 1s ease; animation: shine 2s ease-in-out infinite; }
+        .tap-instruction-show { opacity: 1; }
+        @keyframes shine { 0%, 100% { opacity: 0.7; text-shadow: 0 0 10px #ff6b6b; } 50% { opacity: 1; text-shadow: 0 0 20px #ff6b6b; } }
+        
+        .wrap { position: relative; width: 380px; height: 280px; }
+        
+        /* === ENVELOPE WITH INVERTED TRIANGLE (DOWNWARD POINTING FLAP) === */
+        .letter { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%); border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); cursor: pointer; transition: all 1s ease; z-index: 2; overflow: hidden; }
+        /* Inverted triangle: apex at bottom center, base along top edge */
+        .letter::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 32%; background: #e0e0e0; clip-path: polygon(0% 0%, 100% 0%, 50% 100%); border-radius: 12px 12px 0 0; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); }
+        /* Optional subtle bottom shadow */
+        .letter::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, transparent, #ddd, transparent); opacity: 0.5; }
+        .heart-seal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem; z-index: 3; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+        
+        /* === SLOW, GRADUAL, SMOOTH ARRIVAL (IMPROVED EASING) === */
+        .letter-animate { animation: slowSmoothEnter 2.2s cubic-bezier(0.22, 0.97, 0.36, 1.05) forwards; }
+        @keyframes slowSmoothEnter { 
+            0% { transform: translate(-400px, -300px) scale(0.2) rotate(-15deg); opacity: 0; filter: blur(4px); }
+            40% { opacity: 0.5; transform: translate(15px, 15px) scale(0.7) rotate(3deg); filter: blur(0px); }
+            70% { opacity: 0.9; transform: translate(-5px, -5px) scale(0.95) rotate(-2deg); }
+            100% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; filter: blur(0); }
+        }
+        .letter-fade { opacity: 0; pointer-events: none; z-index: 0; transition: opacity 0.6s ease; }
+        
+        .card { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #fff 0%, #f8f8f8 100%); border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; flex-direction: column; opacity: 0; transform: scale(0.8); z-index: 1; transition: all 0.6s ease; }
+        .card-show { opacity: 1; transform: scale(1); z-index: 2; }
+        .card-border { position: absolute; top: 15px; left: 15px; right: 15px; bottom: 15px; border: 2px solid #dc143c; border-radius: 8px; }
+        
+        @keyframes popUp { 0% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 70% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+        @keyframes fadeOut { 0% { opacity: 1; } 100% { opacity: 0; } }
+        @keyframes fadeOutReduced { 0% { opacity: 0.7; } 100% { opacity: 0; } }
+        
+        .message-text { font-family: 'Playfair Display', serif; font-size: 2.2rem; padding: 12px 25px; border-radius: 8px; opacity: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #ff4d6d; text-shadow: 0 0 10px #ff6b6b, 0 0 20px #ff6b6b, 0 0 30px #ff6b6b, 0 0 40px #dc143c; text-align: center; }
+        .message-popup { animation: popUp 1.2s ease-out forwards; }
+        .message-fadeout { animation: fadeOut 1.5s ease-out forwards; }
+        .message-fadeout-reduced { animation: fadeOutReduced 2s ease-out forwards; }
+        
+        .buttons-container { display: flex; gap: 20px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0; }
+        .buttons-popup { animation: popUp 0.8s ease-out forwards; }
+        
+        .yes-btn { background: #4169e1; color: white; border: none; padding: 15px 35px; font-size: 1.3rem; border-radius: 30px; cursor: pointer; font-family: 'Playfair Display', serif; font-weight: 600; }
+        .no-btn { background: #dc143c; color: white; border: none; padding: 15px 35px; font-size: 1.3rem; border-radius: 30px; cursor: pointer; font-family: 'Playfair Display', serif; font-weight: 600; }
+        
+        /* ========== MOBILE RESPONSIVE (ONLY ADAPTATIONS, NO OTHER CHANGES) ========== */
+        @media (max-width: 650px) {
+            body { overflow-x: hidden; }
+            .content { padding: 20px 15px; width: 100%; }
+            .date { font-size: 1rem; letter-spacing: 4px; margin-bottom: 12px; }
+            .title { font-size: 2.3rem; }
+            .subtitle { font-size: 1.3rem; margin-bottom: 30px; }
+            .hint { font-size: 0.9rem; }
+            .frame { padding: 30px 25px; margin: 0 15px; }
+            .frame::before, .frame::after { font-size: 1.5rem; }
+            .frame::before { top: 5px; left: 10px; }
+            .frame::after { bottom: 5px; right: 10px; }
+            .question { font-size: 1.2rem; }
+            .reveal-btn { padding: 14px 30px; font-size: 1.2rem; letter-spacing: 2px; white-space: nowrap; }
+            .tap-instruction { font-size: 1.2rem; margin-bottom: 20px; text-align: center; }
+            .wrap { width: 85vw; max-width: 320px; height: auto; aspect-ratio: 380 / 280; }
+            .letter, .card { width: 100%; height: 100%; }
+            .heart-seal { font-size: 2.4rem; }
+            .message-text { font-size: 1.5rem; width: 90%; white-space: normal; padding: 10px 15px; }
+            .buttons-container { gap: 15px; flex-wrap: nowrap; width: 80%; justify-content: center; }
+            .yes-btn, .no-btn { padding: 10px 20px; font-size: 1rem; white-space: nowrap; }
+            .card-border { top: 10px; left: 10px; right: 10px; bottom: 10px; }
+        }
+        
+        @media (max-width: 450px) {
+            .title { font-size: 1.9rem; }
+            .subtitle { font-size: 1.1rem; }
+            .reveal-btn { padding: 12px 20px; font-size: 1rem; white-space: normal; }
+            .wrap { max-width: 280px; }
+            .message-text { font-size: 1.2rem; }
+            .yes-btn, .no-btn { padding: 8px 16px; font-size: 0.9rem; }
+            .buttons-container { gap: 12px; }
+        }
+        
+        /* ensure touch targets are comfortable */
+        .reveal-btn, .letter, .yes-btn, .no-btn {
+            touch-action: manipulation;
+        }
+    </style>
+</head>
+<body>
+    <div class="glow"></div>
+    <div id="stars"></div>
+    
+    <div class="content" id="mainContent">
+        <div class="date">February 14, 2025</div>
+        <div class="title">Something Special</div>
+        <div class="subtitle">For someone precious...</div>
+        <div class="hint">What's inside<span class="dot dot1"></span><span class="dot dot2"></span><span class="dot dot3"></span></div>
+        <div class="frame">
+            <div class="question">🤔</div>
+            <button class="reveal-btn" onclick="revealSurprise()">Tap to Reveal</button>
+        </div>
+    </div>
+    
+    <div class="reveal-container" id="revealContainer">
+        <div class="tap-instruction" id="tapInstruction">TAP TO OPEN</div>
+        <div class="wrap">
+            <div class="card" id="theCard">
+                <div class="card-border"></div>
+                <div class="message-text" id="msg1">Hey,are you ready</div>
+                <div class="message-text" id="msg2">to experience the best<br>wishes of the day ?</div>
+                <div class="buttons-container" id="buttons">
+                    <button class="yes-btn" onclick="yesClicked()">✓ Yes</button>
+                    <button class="no-btn" onclick="noClicked()">✗ No</button>
+                </div>
+            </div>
+            <div class="letter" id="theLetter" onclick="openLetter()">
+                <div class="heart-seal">❤️</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        var silverStars = ['✦', '✧'];
+        var starCount = 0;
+        var maxStars = 20;
+        
+        function createMaxGlowStar() {
+            if (starCount >= maxStars) return;
+            var star = document.createElement('div');
+            star.className = 'star-bg star-glow-max';
+            star.textContent = silverStars[0];
+            star.style.left = Math.random() * 92 + 4 + 'vw';
+            star.style.top = Math.random() * 85 + 5 + 'vh';
+            star.style.fontSize = (Math.random() * 5 + 13) + 'px';
+            document.getElementById('stars').appendChild(star);
+            starCount++;
+            setTimeout(function() { star.remove(); starCount--; }, 3500);
+        }
+        
+        function createNormalGlowStar() {
+            if (starCount >= maxStars) return;
+            var star = document.createElement('div');
+            star.className = 'star-bg star-glow-normal';
+            star.textContent = silverStars[1];
+            star.style.left = Math.random() * 92 + 4 + 'vw';
+            star.style.top = Math.random() * 85 + 5 + 'vh';
+            star.style.fontSize = (Math.random() * 4 + 11) + 'px';
+            document.getElementById('stars').appendChild(star);
+            starCount++;
+            setTimeout(function() { star.remove(); starCount--; }, 4000);
+        }
+        
+        for (var i = 0; i < 10; i++) { setTimeout(createMaxGlowStar, i * 200); }
+        for (var j = 0; j < 10; j++) { setTimeout(createNormalGlowStar, j * 200); }
+        setInterval(createMaxGlowStar, 600);
+        setInterval(createNormalGlowStar, 600);
+        
+        function revealSurprise() {
+            document.getElementById('mainContent').style.display = 'none';
+            document.querySelector('.glow').style.display = 'none';
+            document.getElementById('stars').style.display = 'none';
+            document.getElementById('revealContainer').style.display = 'flex';
+            document.getElementById('theLetter').classList.add('letter-animate');
+            setTimeout(function() {
+                document.getElementById('tapInstruction').classList.add('tap-instruction-show');
+            }, 1500);
+        }
+        
+        function openLetter() {
+            document.getElementById('tapInstruction').style.display = 'none';
+            document.getElementById('theLetter').classList.add('letter-fade');
+            document.getElementById('theCard').classList.add('card-show');
+            
+            setTimeout(function() {
+                document.getElementById('msg1').classList.add('message-popup');
+            }, 1250);
+            
+            setTimeout(function() {
+                document.getElementById('msg1').classList.remove('message-popup');
+                document.getElementById('msg1').classList.add('message-fadeout');
+            }, 3750);
+            
+            setTimeout(function() {
+                document.getElementById('msg1').style.display = 'none';
+                document.getElementById('msg2').classList.add('message-popup');
+            }, 5850);
+            
+            setTimeout(function() {
+                document.getElementById('msg2').classList.remove('message-popup');
+                document.getElementById('msg2').classList.add('message-fadeout-reduced');
+            }, 8350);
+            
+            setTimeout(function() {
+                document.getElementById('buttons').classList.add('buttons-popup');
+            }, 9850);
+        }
+        
+       function yesClicked() {
+            window.location.href = 'yes.html';
+        }
+        
+        function noClicked() {
+            window.location.href = 'no.html';
+        }
+    </script>
+</body>
+</html>
