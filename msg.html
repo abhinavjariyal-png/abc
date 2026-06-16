@@ -717,7 +717,6 @@
             }
         }
 
-        /* small close hint */
         .thankyou-card .close-hint {
             margin-top: 1.8em;
             font-family: 'Poppins', sans-serif;
@@ -738,6 +737,211 @@
             }
         }
 
+        /* ===== MAKE A WISH BUTTON ===== */
+        .wish-button-wrapper {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 10050;
+            pointer-events: none;
+            opacity: 0;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+                opacity 0.5s ease;
+        }
+        .wish-button-wrapper.visible {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .wish-button-wrapper.fade-out {
+            transform: translate(-50%, -50%) scale(0.8);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.5s cubic-bezier(0.34, 1.2, 0.64, 1),
+                opacity 0.5s ease;
+        }
+
+        .wish-button {
+            top:-100px;
+            position: relative;
+            padding: 18px 48px;
+            border: none;
+            border-radius: 60px;
+            font-family: 'Pacifico', 'Poppins', cursive;
+            font-size: clamp(1.3rem, 3.5vw, 2.2rem);
+            font-weight: 400;
+            color: #fff8f0;
+            background: linear-gradient(145deg, rgba(255, 100, 150, 0.35), rgba(200, 80, 180, 0.25));
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 180, 210, 0.40);
+            box-shadow: 0 0 60px 15px rgba(255, 130, 180, 0.25),
+                0 0 120px 30px rgba(200, 80, 200, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.25);
+            cursor: pointer;
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 20px rgba(255, 200, 230, 0.4), 0 0 40px rgba(255, 150, 200, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.4s ease, border-color 0.3s ease;
+            pointer-events: auto;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .wish-button::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 63px;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(255, 200, 230, 0.6), rgba(255, 100, 150, 0.3), rgba(200, 80, 200, 0.4));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        .wish-button:hover {
+            transform: scale(1.06);
+            box-shadow: 0 0 80px 25px rgba(255, 130, 180, 0.35),
+                0 0 140px 40px rgba(200, 80, 200, 0.18),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 200, 230, 0.6);
+        }
+        .wish-button:active {
+            transform: scale(0.94);
+        }
+
+        .wish-button .wish-icon {
+            display: inline-block;
+            margin-right: 10px;
+            font-size: 1.2em;
+            filter: drop-shadow(0 0 8px rgba(255, 200, 230, 0.6));
+            animation: twinkleStar 1.8s ease-in-out infinite;
+        }
+        @keyframes twinkleStar {
+            0%,
+            100% {
+                transform: scale(1) rotate(0deg);
+                filter: drop-shadow(0 0 8px rgba(255, 200, 230, 0.6));
+            }
+            50% {
+                transform: scale(1.15) rotate(10deg);
+                filter: drop-shadow(0 0 20px rgba(255, 150, 220, 0.9));
+            }
+        }
+
+        .wish-button .sparkle-ring {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            border-radius: 68px;
+            pointer-events: none;
+            background: transparent;
+            box-shadow: 0 0 30px 8px rgba(255, 180, 220, 0.15);
+            animation: ringPulse 2.2s ease-in-out infinite;
+        }
+        @keyframes ringPulse {
+            0%,
+            100% {
+                box-shadow: 0 0 30px 8px rgba(255, 180, 220, 0.15);
+            }
+            50% {
+                box-shadow: 0 0 50px 18px rgba(255, 150, 210, 0.25);
+            }
+        }
+
+        .wish-button .glow-dot {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fff8e0, #ffb3cc);
+            box-shadow: 0 0 14px 4px rgba(255, 180, 220, 0.6);
+            pointer-events: none;
+            animation: floatDot 3s ease-in-out infinite;
+        }
+        .wish-button .glow-dot:nth-child(1) {
+            top: -8px;
+            left: 15%;
+            animation-delay: 0s;
+        }
+        .wish-button .glow-dot:nth-child(2) {
+            bottom: -8px;
+            right: 20%;
+            animation-delay: 1.2s;
+            width: 4px;
+            height: 4px;
+        }
+        .wish-button .glow-dot:nth-child(3) {
+            top: 30%;
+            right: -12px;
+            animation-delay: 0.6s;
+            width: 5px;
+            height: 5px;
+        }
+        .wish-button .glow-dot:nth-child(4) {
+            bottom: 30%;
+            left: -12px;
+            animation-delay: 1.8s;
+            width: 4px;
+            height: 4px;
+        }
+
+        @keyframes floatDot {
+            0%,
+            100% {
+                transform: translateY(0) scale(0.8);
+                opacity: 0.4;
+            }
+            50% {
+                transform: translateY(-10px) scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        /* ===== DUST PARTICLES ===== */
+        .dust-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 10060;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #fff8e0, #ffb3cc, #ff85b3);
+            box-shadow: 0 0 18px 6px rgba(255, 180, 220, 0.4);
+            will-change: transform, opacity, width, height;
+            animation: dustFloat 2.8s ease-out forwards;
+        }
+        @keyframes dustFloat {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.95;
+            }
+            30% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--dx), var(--dy)) scale(0.1);
+                opacity: 0;
+            }
+        }
+
+        .dust-particle.gold {
+            background: radial-gradient(circle at 30% 30%, #fff8d0, #f7d44a, #e8a83a);
+            box-shadow: 0 0 20px 8px rgba(255, 215, 80, 0.5);
+        }
+        .dust-particle.pink {
+            background: radial-gradient(circle at 30% 30%, #ffe4f0, #ff85b3, #ff4d7a);
+            box-shadow: 0 0 18px 6px rgba(255, 130, 180, 0.5);
+        }
+        .dust-particle.purple {
+            background: radial-gradient(circle at 30% 30%, #f0e4ff, #c88aff, #a05ad0);
+            box-shadow: 0 0 18px 6px rgba(180, 130, 255, 0.4);
+        }
+        .dust-particle.white {
+            background: radial-gradient(circle at 30% 30%, #ffffff, #ffe8f0, #ffc0d0);
+            box-shadow: 0 0 14px 4px rgba(255, 200, 220, 0.5);
+        }
+
         /* responsive tweaks */
         @media (max-width: 480px) {
             .thankyou-card {
@@ -746,6 +950,10 @@
             }
             .thankyou-card .sparkle-group {
                 border-radius: 32px;
+            }
+            .wish-button {
+                padding: 14px 28px;
+                font-size: 1.1rem;
             }
         }
     </style>
@@ -871,7 +1079,21 @@
         </div>
     </div>
 
-    <div class="instruction">✨ Whisper a wish to the glowing Tulips ✨</div>
+    <div class="instruction"></div>
+
+    <!-- ===== MAKE A WISH BUTTON (hidden until triggered) ===== -->
+    <div class="wish-button-wrapper" id="wishButtonWrapper">
+        <button class="wish-button" id="wishButton">
+            <span class="sparkle-ring"></span>
+            <span class="glow-dot"></span>
+            <span class="glow-dot"></span>
+            <span class="glow-dot"></span>
+            <span class="glow-dot"></span>
+            <span class="wish-icon">✦</span>
+            Make a Wish
+            <span class="wish-icon" style="margin-left:10px;margin-right:0;">✦</span>
+        </button>
+    </div>
 
     <!-- ===== THANK YOU SLIDE ===== -->
     <div class="thankyou-overlay" id="thankyouOverlay">
@@ -888,7 +1110,7 @@
             <div class="sub">for visiting the garden</div>
             <div class="divider"></div>
             <p>May your wishes bloom as brightly<br />as these enchanted tulips.</p>
-            <div class="close-hint">✦       ✦</div>
+            <div class="close-hint">✦     ✦</div>
         </div>
     </div>
 
@@ -1024,7 +1246,7 @@
         })();
     </script>
 
-    <!-- SEED ARRIVAL, ROOT GLOW, REMOVE SOIL LINE & THANK YOU SLIDE -->
+    <!-- SEED ARRIVAL, ROOT GLOW, BUTTON, DUST, & THANK YOU -->
     <script>
         (function groundedBloom() {
             const overlay = document.createElement('div');
@@ -1117,14 +1339,16 @@
                             if (line.parentNode) line.remove();
                         });
 
-                        // === SHOW THANK YOU SLIDE after 5 seconds ===
+                        // === SHOW "MAKE A WISH" BUTTON ===
+                        showWishButton();
+
+                        // === THANK YOU MESSAGE AFTER 8 SECONDS ===
                         setTimeout(() => {
                             const tyOverlay = document.getElementById('thankyouOverlay');
                             if (tyOverlay) {
                                 tyOverlay.classList.add('visible');
-                                // optional: auto-hide after 10s? we keep it visible for user to enjoy
                             }
-                        }, 5000);
+                        }, 8000); // 8 seconds from soil line completion
 
                     }, 650);
                 };
@@ -1159,6 +1383,109 @@
                         flower.appendChild(glowDiv);
                     }
                 });
+            }
+
+            // ===== MAKE A WISH BUTTON LOGIC =====
+            let wishButtonShown = false;
+
+            function showWishButton() {
+                if (wishButtonShown) return;
+                wishButtonShown = true;
+
+                const wrapper = document.getElementById('wishButtonWrapper');
+                const btn = document.getElementById('wishButton');
+
+                // Show with a small delay for dramatic effect
+                setTimeout(() => {
+                    wrapper.classList.add('visible');
+
+                    // Click handler: make a wish! (with extra sparkle)
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        // burst of extra sparkle on click
+                        const rect = this.getBoundingClientRect();
+                        const cx = rect.left + rect.width / 2;
+                        const cy = rect.top + rect.height / 2;
+                        spawnDustBurst(cx, cy, 50, true);
+                        // still remove the button after 3.5s from appearance
+                    });
+
+                    // Auto-remove after 3.5 seconds with dust
+                    setTimeout(() => {
+                        removeButtonWithDust(wrapper);
+                    }, 3500);
+
+                }, 400);
+            }
+
+            function removeButtonWithDust(wrapper) {
+                if (!wrapper) return;
+                // Get button position for dust origin
+                const btn = document.getElementById('wishButton');
+                const rect = btn ? btn.getBoundingClientRect() : null;
+                const cx = rect ? rect.left + rect.width / 2 : window.innerWidth / 2;
+                const cy = rect ? rect.top + rect.height / 2 : window.innerHeight / 2;
+
+                // Fade out the button
+                wrapper.classList.remove('visible');
+                wrapper.classList.add('fade-out');
+
+                // Spawn glowing dust particles
+                spawnDustBurst(cx, cy, 70, false);
+
+                // Remove wrapper after animation
+                setTimeout(() => {
+                    if (wrapper.parentNode) wrapper.remove();
+                }, 3500);
+            }
+
+            function spawnDustBurst(cx, cy, count, isClickBurst) {
+                const colors = ['gold', 'pink', 'purple', 'white'];
+                const particleCount = count || 60;
+
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'dust-particle';
+
+                    // Random size
+                    const size = isClickBurst ?
+                        4 + Math.random() * 10 :
+                        3 + Math.random() * 12;
+
+                    // Random direction
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = isClickBurst ?
+                        80 + Math.random() * 220 :
+                        60 + Math.random() * 300;
+
+                    const dx = Math.cos(angle) * distance;
+                    const dy = Math.sin(angle) * distance - 30; // slight upward bias
+
+                    // Random color class
+                    const colorClass = colors[Math.floor(Math.random() * colors.length)];
+                    particle.classList.add(colorClass);
+
+                    particle.style.width = size + 'px';
+                    particle.style.height = size + 'px';
+                    particle.style.left = cx + 'px';
+                    particle.style.top = cy + 'px';
+                    particle.style.setProperty('--dx', dx + 'px');
+                    particle.style.setProperty('--dy', dy + 'px');
+
+                    // Random animation duration for variety
+                    const duration = 2.0 + Math.random() * 1.8;
+                    particle.style.animationDuration = duration + 's';
+
+                    // Random delay
+                    particle.style.animationDelay = (Math.random() * 0.4) + 's';
+
+                    document.body.appendChild(particle);
+
+                    // Remove particle after animation completes
+                    setTimeout(() => {
+                        if (particle.parentNode) particle.remove();
+                    }, (duration + 0.5) * 1000);
+                }
             }
 
             document.querySelector('.title').style.opacity = '0';
