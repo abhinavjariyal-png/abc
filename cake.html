@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Happy Birthday Celebration</title>
     <style>
         * {
@@ -60,6 +60,7 @@
             opacity: 1;
         }
 
+        /* BUNTING */
         .bunting {
             position: fixed;
             top: 20px;
@@ -88,7 +89,8 @@
             gap: 6px;
         }
 
-        .letter-card {
+        /* LETTER CARDS – base style, hidden until parent gets .show */
+        .bunting .letter-card {
             background: #fff9ef;
             width: 52px;
             height: 62px;
@@ -104,11 +106,11 @@
             text-shadow: 1px 1px 0 #ffe0b5;
             border-bottom: 3px solid #ffb347;
             position: relative;
-            animation: paperGlide 0.5s ease-out forwards;
             opacity: 0;
+            /* animation will be triggered by .bunting.show */
         }
 
-        .letter-card::before {
+        .bunting .letter-card::before {
             content: "✧";
             position: absolute;
             top: -12px;
@@ -116,6 +118,55 @@
             transform: translateX(-50%);
             font-size: 14px;
             color: #d4a373;
+        }
+
+        /* POPPING ANIMATION – triggered when .bunting.show is active */
+        @keyframes popLetter {
+            0% {
+                transform: scale(0) rotate(-8deg);
+                opacity: 0;
+            }
+            60% {
+                transform: scale(1.15) rotate(2deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        .bunting.show .letter-card {
+            animation: popLetter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* Staggered delays per letter – works for both rows consistently */
+        .bunting.show .letter-card:nth-child(1) {
+            animation-delay: 0.05s;
+        }
+        .bunting.show .letter-card:nth-child(2) {
+            animation-delay: 0.10s;
+        }
+        .bunting.show .letter-card:nth-child(3) {
+            animation-delay: 0.15s;
+        }
+        .bunting.show .letter-card:nth-child(4) {
+            animation-delay: 0.20s;
+        }
+        .bunting.show .letter-card:nth-child(5) {
+            animation-delay: 0.25s;
+        }
+        .bunting.show .letter-card:nth-child(6) {
+            animation-delay: 0.30s;
+        }
+        .bunting.show .letter-card:nth-child(7) {
+            animation-delay: 0.35s;
+        }
+        .bunting.show .letter-card:nth-child(8) {
+            animation-delay: 0.40s;
+        }
+        .bunting.show .letter-card:nth-child(9) {
+            animation-delay: 0.45s;
         }
 
         .thread-line {
@@ -151,7 +202,7 @@
             letter-spacing: 2px;
             z-index: 100;
             border: 1px solid #ffcc99;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
             white-space: nowrap;
             display: none;
             text-align: center;
@@ -227,8 +278,16 @@
         }
 
         @keyframes flickerFlame {
-            0% { transform: translateX(-50%) scale(1, 1) rotate(0deg); opacity: 0.95; box-shadow: 0 0 20px #ffaa44; }
-            100% { transform: translateX(-50%) scale(1.08, 0.92) rotate(1deg); opacity: 1; box-shadow: 0 0 35px #ff9933; }
+            0% {
+                transform: translateX(-50%) scale(1, 1) rotate(0deg);
+                opacity: 0.95;
+                box-shadow: 0 0 20px #ffaa44;
+            }
+            100% {
+                transform: translateX(-50%) scale(1.08, 0.92) rotate(1deg);
+                opacity: 1;
+                box-shadow: 0 0 35px #ff9933;
+            }
         }
 
         .firecracker {
@@ -243,8 +302,14 @@
         }
 
         @keyframes fireFly {
-            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-            100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0); opacity: 0; }
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0);
+                opacity: 0;
+            }
         }
 
         .rocket-emoji {
@@ -256,8 +321,14 @@
         }
 
         @keyframes rocketFlyRandom {
-            0% { transform: translate(-50%, -50%) rotate(0deg); opacity: 1; }
-            100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(360deg); opacity: 0; }
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(360deg);
+                opacity: 0;
+            }
         }
 
         .rocket-explosion {
@@ -270,234 +341,196 @@
         }
 
         @keyframes explodeGlow {
-            0% { width: 10px; height: 10px; opacity: 1; box-shadow: 0 0 0px #ffaa33; }
-            100% { width: 80px; height: 80px; opacity: 0; box-shadow: 0 0 40px #ffcc44; }
+            0% {
+                width: 10px;
+                height: 10px;
+                opacity: 1;
+                box-shadow: 0 0 0px #ffaa33;
+            }
+            100% {
+                width: 80px;
+                height: 80px;
+                opacity: 0;
+                box-shadow: 0 0 40px #ffcc44;
+            }
         }
 
-        /* New Card Design - Popping effect + tilt + message reveal */
-       .message-card {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 360px;
-    height: 240px;
-    max-width: 85vw;
-
-    transform: translate(-50%, -50%) scale(0);
-    transform-style: preserve-3d;
-    perspective: 1200px;
-
-    z-index: 300;
-
-    border-radius: 28px;
-    overflow: hidden;
-
-    /* LUXURY GLASS BASE */
-    background: linear-gradient(135deg,
-        rgba(255, 255, 255, 0.18),
-        rgba(255, 215, 0, 0.06),
-        rgba(0, 0, 0, 0.25)
-    );
-
-    backdrop-filter: blur(22px);
-
-    /* PREMIUM SHADOW STACK */
-    box-shadow:
-        0 30px 80px rgba(0, 0, 0, 0.55),
-        0 10px 30px rgba(255, 215, 0, 0.15),
-        inset 0 0 0 1px rgba(255, 215, 0, 0.25);
-
-    border: 1px solid rgba(255, 215, 0, 0.35);
-
-    transition: transform 0.6s cubic-bezier(0.34, 1.2, 0.64, 1),
+        /* MESSAGE CARD */
+        .message-card {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 360px;
+            height: 240px;
+            max-width: 85vw;
+            transform: translate(-50%, -50%) scale(0);
+            transform-style: preserve-3d;
+            perspective: 1200px;
+            z-index: 300;
+            border-radius: 28px;
+            overflow: hidden;
+            background: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.18),
+                    rgba(255, 215, 0, 0.06),
+                    rgba(0, 0, 0, 0.25));
+            backdrop-filter: blur(22px);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55),
+                0 10px 30px rgba(255, 215, 0, 0.15),
+                inset 0 0 0 1px rgba(255, 215, 0, 0.25);
+            border: 1px solid rgba(255, 215, 0, 0.35);
+            transition: transform 0.6s cubic-bezier(0.34, 1.2, 0.64, 1),
                 box-shadow 0.3s ease;
-}
+            display: none;
+        }
 
-/* GOLD LUXURY EDGE GLOW */
-.message-card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 28px;
-    pointer-events: none;
+        .message-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 28px;
+            pointer-events: none;
+            border: 1.5px solid rgba(255, 215, 0, 0.6);
+            box-shadow: inset 0 0 20px rgba(255, 215, 0, 0.15),
+                0 0 25px rgba(255, 215, 0, 0.2);
+        }
 
-    border: 1.5px solid rgba(255, 215, 0, 0.6);
+        .message-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(gold, gold) top left / 40px 2px no-repeat,
+                linear-gradient(gold, gold) top left / 2px 40px no-repeat,
+                linear-gradient(gold, gold) top right / 40px 2px no-repeat,
+                linear-gradient(gold, gold) top right / 2px 40px no-repeat,
+                linear-gradient(gold, gold) bottom left / 40px 2px no-repeat,
+                linear-gradient(gold, gold) bottom left / 2px 40px no-repeat,
+                linear-gradient(gold, gold) bottom right / 40px 2px no-repeat,
+                linear-gradient(gold, gold) bottom right / 2px 40px no-repeat;
+            opacity: 0.8;
+        }
 
-    box-shadow:
-        inset 0 0 20px rgba(255, 215, 0, 0.15),
-        0 0 25px rgba(255, 215, 0, 0.2);
-}
-.message-card::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-}
+        @keyframes luxuryFloat {
+            0%,
+            100% {
+                transform: translate(-50%, -50%) translateY(0px);
+                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55),
+                    0 10px 30px rgba(255, 215, 0, 0.15);
+            }
+            50% {
+                transform: translate(-50%, -50%) translateY(-10px);
+                box-shadow: 0 40px 100px rgba(0, 0, 0, 0.65),
+                    0 15px 40px rgba(255, 215, 0, 0.25);
+            }
+        }
 
-/* TOP-LEFT CORNER */
-.message-card::after {
-    background:
-        linear-gradient(gold, gold) top left / 40px 2px no-repeat,
-        linear-gradient(gold, gold) top left / 2px 40px no-repeat,
+        .message-card.pop-out {
+            animation: luxuryFloat 3.5s ease-in-out infinite;
+        }
 
-        /* TOP-RIGHT */
-        linear-gradient(gold, gold) top right / 40px 2px no-repeat,
-        linear-gradient(gold, gold) top right / 2px 40px no-repeat,
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 28px;
+            font-family: 'Playfair Display', serif;
+        }
 
-        /* BOTTOM-LEFT */
-        linear-gradient(gold, gold) bottom left / 40px 2px no-repeat,
-        linear-gradient(gold, gold) bottom left / 2px 40px no-repeat,
+        .card-front {
+            background: radial-gradient(circle at top left,
+                    rgba(255, 215, 0, 0.25),
+                    rgba(255, 140, 0, 0.08),
+                    rgba(0, 0, 0, 0.2));
+            color: #ffd700;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-shadow: 0 2px 10px rgba(255, 215, 0, 0.4),
+                0 0 20px rgba(255, 215, 0, 0.2);
+        }
 
-        /* BOTTOM-RIGHT */
-        linear-gradient(gold, gold) bottom right / 40px 2px no-repeat,
-        linear-gradient(gold, gold) bottom right / 2px 40px no-repeat;
+        .card-back {
+            transform: rotateY(180deg);
+            background: linear-gradient(145deg, #fffdf7, #fff2d9);
+            padding: 20px;
+            color: #5a2a2a;
+            box-shadow: inset 0 0 40px rgba(255, 215, 0, 0.08);
+        }
 
-    opacity: 0.8;
-}
-/* SOFT FLOATING LUXURY MOTION */
-@keyframes luxuryFloat {
-    0%, 100% {
-        transform: translate(-50%, -50%) translateY(0px);
-        box-shadow:
-            0 30px 80px rgba(0, 0, 0, 0.55),
-            0 10px 30px rgba(255, 215, 0, 0.15);
-    }
-    50% {
-        transform: translate(-50%, -50%) translateY(-10px);
-        box-shadow:
-            0 40px 100px rgba(0, 0, 0, 0.65),
-            0 15px 40px rgba(255, 215, 0, 0.25);
-    }
-}
+        .message-text {
+            font-size: 1.25rem;
+            font-weight: 500;
+            line-height: 1.6;
+            text-align: center;
+        }
 
-/* APPLY FLOAT AFTER POP */
-.message-card.pop-out {
-    animation: luxuryFloat 3.5s ease-in-out infinite;
-}
-
-/* FRONT + BACK FACE IMPROVEMENT */
-.card-face {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 28px;
-    font-family: 'Playfair Display', serif;
-}
-
-/* FRONT (LUXURY GOLD TEXT) */
-.card-front {
-    background: radial-gradient(circle at top left,
-        rgba(255, 215, 0, 0.25),
-        rgba(255, 140, 0, 0.08),
-        rgba(0, 0, 0, 0.2)
-    );
-
-    color: #ffd700;
-    font-size: 1.8rem;
-    font-weight: bold;
-
-    text-shadow:
-        0 2px 10px rgba(255, 215, 0, 0.4),
-        0 0 20px rgba(255, 215, 0, 0.2);
-}
-
-/* BACK (CLEAN LUXURY PAPER LOOK) */
-.card-back {
-    transform: rotateY(180deg);
-
-    background: linear-gradient(145deg, #fffdf7, #fff2d9);
-
-    padding: 20px;
-
-    color: #5a2a2a;
-
-    box-shadow:
-        inset 0 0 40px rgba(255, 215, 0, 0.08);
-}
-
-/* TEXT LUXURY */
-.message-text {
-    font-size: 1.25rem;
-    font-weight: 500;
-    line-height: 1.6;
-    text-align: center;
-}
-        /* Popping out animation */
         .message-card.pop-out {
             transform: translate(-50%, -50%) scale(1);
             animation: pop 0.5s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
         }
 
         @keyframes pop {
-            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-            60% { transform: translate(-50%, -50%) scale(1.08); opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+            60% {
+                transform: translate(-50%, -50%) scale(1.08);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
         }
 
-        /* Tilt animation */
         .message-card.tilt {
             transform: translate(-50%, -50%) rotate(2.5deg) scale(1.02);
-            box-shadow: 0 35px 55px rgba(0,0,0,0.45), 0 0 0 2px #dc143c, 0 0 0 6px rgba(212, 175, 55, 0.3);
+            box-shadow: 0 35px 55px rgba(0, 0, 0, 0.45), 0 0 0 2px #dc143c, 0 0 0 6px rgba(212, 175, 55, 0.3);
             transition: transform 0.4s ease, box-shadow 0.3s ease;
         }
 
-        .message-text {
-            line-height: 1.5;
-            min-height: 200px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            white-space: pre-wrap;
-            font-size: 1.4rem;
-            font-weight: 600;
-        }
         .card-inner {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    transform-style: preserve-3d;
-    transition: transform 1s ease;
-}
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1s ease;
+        }
 
-.card-face {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 28px;
-    font-family: 'Playfair Display', serif;
-}
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 28px;
+            font-family: 'Playfair Display', serif;
+        }
 
-/* FRONT SIDE */
-.card-front {
-    background: linear-gradient(145deg, #ffecd2, #fcb69f);
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #b22222;
-}
+        .card-front {
+            background: linear-gradient(145deg, #ffecd2, #fcb69f);
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #b22222;
+        }
 
-/* BACK SIDE */
-.card-back {
-    background: white;
-    transform: rotateY(180deg);
-    padding: 20px;
-}
+        .card-back {
+            background: white;
+            transform: rotateY(180deg);
+            padding: 20px;
+        }
 
-/* FLIP STATE */
-.message-card.flipped .card-inner {
-    transform: rotateY(180deg);
-}
+        .message-card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
 
-        /* Folding sphere (no sound) */
         .fold-sphere {
             position: fixed;
             top: 50%;
@@ -507,7 +540,7 @@
             background: white;
             border-radius: 50%;
             transform: translate(-50%, -50%) scale(0);
-            box-shadow: 0 0 30px 10px rgba(255,255,200,0.8);
+            box-shadow: 0 0 30px 10px rgba(255, 255, 200, 0.8);
             z-index: 10000;
             pointer-events: none;
             transition: transform 1.2s cubic-bezier(0.2, 0.9, 0.4, 1.2);
@@ -516,45 +549,43 @@
         .fold-sphere.active {
             transform: translate(-50%, -50%) scale(120);
         }
-.shutter {
-    position: fixed;
-    inset: 0;
-    z-index: 9998;
-    pointer-events: none;
-}
 
-/* top and bottom closing panels */
-.shutter::before,
-.shutter::after {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 50%;
-    background: black;
-    left: 0;
-    transition: transform 1s cubic-bezier(0.2, 0.9, 0.2, 1);
-}
+        .shutter {
+            position: fixed;
+            inset: 0;
+            z-index: 9998;
+            pointer-events: none;
+        }
 
-/* top half */
-.shutter::before {
-    top: 0;
-    transform: translateY(-100%);
-}
+        .shutter::before,
+        .shutter::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 50%;
+            background: black;
+            left: 0;
+            transition: transform 1s cubic-bezier(0.2, 0.9, 0.2, 1);
+        }
 
-/* bottom half */
-.shutter::after {
-    bottom: 0;
-    transform: translateY(100%);
-}
+        .shutter::before {
+            top: 0;
+            transform: translateY(-100%);
+        }
 
-/* ACTIVE = CLOSE SHUTTER */
-.shutter.active::before {
-    transform: translateY(0);
-}
+        .shutter::after {
+            bottom: 0;
+            transform: translateY(100%);
+        }
 
-.shutter.active::after {
-    transform: translateY(0);
-}
+        .shutter.active::before {
+            transform: translateY(0);
+        }
+
+        .shutter.active::after {
+            transform: translateY(0);
+        }
+
         .blackout-final {
             position: fixed;
             inset: 0;
@@ -564,443 +595,451 @@
             pointer-events: none;
             transition: opacity 1s ease;
         }
+
         .sparkle {
-    position: fixed;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: radial-gradient(circle, #fff8c6, #ffd700, transparent);
-    box-shadow: 0 0 10px #ffd700, 0 0 20px #ffcc00;
-    pointer-events: none;
-    z-index: 500;
-    animation: sparkleMove 1.2s ease-out forwards;
-}
-@keyframes cardExit {
-    0% {
-        transform: translate(-50%, -50%) scale(1) rotate(0deg);
-        opacity: 1;
-        filter: blur(0px);
-    }
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fff8c6, #ffd700, transparent);
+            box-shadow: 0 0 10px #ffd700, 0 0 20px #ffcc00;
+            pointer-events: none;
+            z-index: 500;
+            animation: sparkleMove 1.2s ease-out forwards;
+        }
 
-    70% {
-        transform: translate(20vw, -55%) scale(0.65) rotate(8deg);
-        opacity: 0.95;
-        filter: blur(1px);
-    }
+        @keyframes cardExit {
+            0% {
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+                opacity: 1;
+                filter: blur(0px);
+            }
+            70% {
+                transform: translate(20vw, -55%) scale(0.65) rotate(8deg);
+                opacity: 0.95;
+                filter: blur(1px);
+            }
+            100% {
+                transform: translate(140vw, -60%) scale(0.15) rotate(15deg);
+                opacity: 0;
+                filter: blur(8px);
+            }
+        }
 
-    100% {
-        transform: translate(140vw, -60%) scale(0.15) rotate(15deg);
-        opacity: 0;
-        filter: blur(8px);
-    }
-}
+        .message-card.exit {
+            animation: cardExit 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
 
-.message-card.exit {
-    animation: cardExit 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-@keyframes sparkleMove {
-    0% {
-        transform: translate(0, 0) scale(1);
-        opacity: 1;
-    }
-    100% {
-        transform: translate(var(--dx), var(--dy)) scale(0);
-        opacity: 0;
-    }
-}
+        @keyframes sparkleMove {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--dx), var(--dy)) scale(0);
+                opacity: 0;
+            }
+        }
 
         .blackout-final.active {
             opacity: 1;
             pointer-events: auto;
         }
-body::before,
-body::after {
-    content: "";
-    position: fixed;
-    left: 0;
-    width: 100%;
-    height: 50%;
-    background: #000;
-    z-index: 9999;
-    pointer-events: none;
-    transform: scaleY(0);
-    transition: transform 0.9s cubic-bezier(0.77, 0, 0.18, 1);
-}
 
-body::before {
-    top: 0;
-    transform-origin: top;
-}
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: #000;
+            z-index: 9999;
+            pointer-events: none;
+            transform: scaleY(0);
+            transition: transform 0.9s cubic-bezier(0.77, 0, 0.18, 1);
+        }
 
-body::after {
-    bottom: 0;
-    transform-origin: bottom;
-}
+        body::before {
+            top: 0;
+            transform-origin: top;
+        }
 
-body.shutter-close::before,
-body.shutter-close::after {
-    transform: scaleY(1);
-}
+        body::after {
+            bottom: 0;
+            transform-origin: bottom;
+        }
+
+        body.shutter-close::before,
+        body.shutter-close::after {
+            transform: scaleY(1);
+        }
+
         @media (max-width: 850px) {
-            .cake-img { width: 600px; }
-            .flame-only { width: 8vw; max-width: 60px; min-width: 28px; margin-bottom: -6px; }
-        }
-        @media (max-width: 700px) {
-            .cake-img { width: 450px; }
-            .flame-only { width: 7vw; max-width: 50px; min-width: 24px; margin-bottom: -5px; }
-            .countdown-panel { top: 140px; font-size: 1.3rem; padding: 6px 20px; }
-            .letter-card { width: 40px; height: 50px; font-size: 1.5rem; }
-            .bunting { top: 12px; }
-            .bunting-row { gap: 4px; }
-        }
-        @media (max-width: 550px) {
-            .cake-img { width: 320px; }
-            .flame-only { width: 6.5vw; max-width: 40px; min-width: 20px; margin-bottom: -4px; }
-            .countdown-panel { top: 120px; font-size: 1.1rem; padding: 5px 16px; }
-            .letter-card { width: 32px; height: 42px; font-size: 1.2rem; }
-            .message-text { font-size: 1.2rem; }
+            .cake-img {
+                width: 600px;
+            }
+            .flame-only {
+                width: 8vw;
+                max-width: 60px;
+                min-width: 28px;
+                margin-bottom: -6px;
+            }
         }
 
-        @keyframes paperGlide {
-            0% { transform: translateY(-40px) scale(0.7); opacity: 0; filter: blur(3px); }
-            60% { transform: translateY(5px) scale(1.02); opacity: 1; filter: blur(0); }
-            100% { transform: translateY(0) scale(1); opacity: 1; }
+        @media (max-width: 700px) {
+            .cake-img {
+                width: 450px;
+            }
+            .flame-only {
+                width: 7vw;
+                max-width: 50px;
+                min-width: 24px;
+                margin-bottom: -5px;
+            }
+            .countdown-panel {
+                top: 140px;
+                font-size: 1.3rem;
+                padding: 6px 20px;
+            }
+            .bunting .letter-card {
+                width: 40px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+            .bunting {
+                top: 12px;
+            }
+            .bunting-row {
+                gap: 4px;
+            }
+        }
+
+        @media (max-width: 550px) {
+            .cake-img {
+                width: 320px;
+            }
+            .flame-only {
+                width: 6.5vw;
+                max-width: 40px;
+                min-width: 20px;
+                margin-bottom: -4px;
+            }
+            .countdown-panel {
+                top: 120px;
+                font-size: 1.1rem;
+                padding: 5px 16px;
+            }
+            .bunting .letter-card {
+                width: 32px;
+                height: 42px;
+                font-size: 1.2rem;
+            }
+            .message-text {
+                font-size: 1.2rem;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="initial-black" id="blackScreen"></div>
+    <div class="initial-black" id="blackScreen"></div>
 
-<div class="celebration-container" id="celebrationContainer">
-    <div class="thread-line" id="threadLine"></div>
-    
-    <div class="bunting" id="bunting">
-        <div class="bunting-row">
-            <div class="letter-card">H</div>
-            <div class="letter-card">A</div>
-            <div class="letter-card">P</div>
-            <div class="letter-card">P</div>
-            <div class="letter-card">Y</div>
+    <div class="celebration-container" id="celebrationContainer">
+        <div class="thread-line" id="threadLine"></div>
+
+        <div class="bunting" id="bunting">
+            <div class="bunting-row">
+                <div class="letter-card">H</div>
+                <div class="letter-card">A</div>
+                <div class="letter-card">P</div>
+                <div class="letter-card">P</div>
+                <div class="letter-card">Y</div>
+            </div>
+            <div class="bunting-row">
+                <div class="letter-card">B</div>
+                <div class="letter-card">I</div>
+                <div class="letter-card">R</div>
+                <div class="letter-card">T</div>
+                <div class="letter-card">H</div>
+                <div class="letter-card">D</div>
+                <div class="letter-card">A</div>
+                <div class="letter-card">Y</div>
+                <div class="letter-card">🎉</div>
+            </div>
         </div>
-        <div class="bunting-row">
-            <div class="letter-card">B</div>
-            <div class="letter-card">I</div>
-            <div class="letter-card">R</div>
-            <div class="letter-card">T</div>
-            <div class="letter-card">H</div>
-            <div class="letter-card">D</div>
-            <div class="letter-card">A</div>
-            <div class="letter-card">Y</div>
-            <div class="letter-card">🎉</div>
+
+        <div class="countdown-panel" id="countdownPanel">
+            Blow🕯️in <span id="timer">00:10</span>
+        </div>
+
+        <div class="cake-wrapper" id="cakeWrapper">
+            <img src="cake.png" class="cake-img" id="cakeImage" alt="Birthday Cake" />
+            <div class="flame-only" id="flameOnly"></div>
         </div>
     </div>
 
-    <div class="countdown-panel" id="countdownPanel">
-         Blow🕯️in <span id="timer">01:20</span>
-    </div>
-
-    <div class="cake-wrapper" id="cakeWrapper">
-        <img src="cake.png" class="cake-img" id="cakeImage" alt="Birthday Cake">
-        <div class="flame-only" id="flameOnly"></div>
-    </div>
-</div>
-
-<div id="messageCard" class="message-card">
-    <div class="card-inner" id="cardInner">
-
-        <!-- FRONT -->
-        <div class="card-face card-front">
-          Happy Birthday!
+    <div id="messageCard" class="message-card">
+        <div class="card-inner" id="cardInner">
+            <div class="card-face card-front">
+                Happy Birthday!
+            </div>
+            <div class="card-face card-back">
+                <div class="message-text" id="messageText"></div>
+            </div>
+            <div id="shutter" class="shutter"></div>
         </div>
-
-        <!-- BACK -->
-        <div class="card-face card-back">
-            <div class="message-text" id="messageText"></div>
-        </div>
-        <div id="shutter" class="shutter"></div>
-
     </div>
-</div>
 
-<div id="foldSphere" class="fold-sphere"></div>
-<div id="blackoutFinal" class="blackout-final"></div>
+    <div id="foldSphere" class="fold-sphere"></div>
+    <div id="blackoutFinal" class="blackout-final"></div>
 
-<audio id="turnOnAudio" preload="auto">
-    <source src="turnon.mp3" type="audio/mpeg">
-</audio>
-<audio id="frameChime" preload="auto">
-    <source src="chime.mp3" type="audio/mpeg">
-</audio>
-<audio id="birthdaySong" preload="auto">
-    <source src="birthday2sound.mp3" type="audio/mpeg">
-</audio>
-<audio id="blowAudioEffect" preload="auto">
-    <source src="candleblow.mp3" type="audio/mpeg">
-</audio>
+    <audio id="turnOnAudio" preload="auto">
+        <source src="turnon.mp3" type="audio/mpeg" />
+    </audio>
+    <audio id="frameChime" preload="auto">
+        <source src="chime.mp3" type="audio/mpeg" />
+    </audio>
+    <audio id="birthdaySong" preload="auto">
+        <source src="birthday2sound.mp3" type="audio/mpeg" />
+    </audio>
+    <audio id="blowAudioEffect" preload="auto">
+        <source src="candleblow.mp3" type="audio/mpeg" />
+    </audio>
 
-<script>
-    (function(){
-        // DOM elements
-        const blackScreen = document.getElementById('blackScreen');
-        const container = document.getElementById('celebrationContainer');
-        const threadLine = document.getElementById('threadLine');
-        const bunting = document.getElementById('bunting');
-        const cakeWrapper = document.getElementById('cakeWrapper');
-        const countdownPanel = document.getElementById('countdownPanel');
-        const timerSpan = document.getElementById('timer');
-        const flame = document.getElementById('flameOnly');
-        const messageCard = document.getElementById('messageCard');
-        const messageTextDiv = document.getElementById('messageText');
-        const foldSphere = document.getElementById('foldSphere');
-        const blackoutFinal = document.getElementById('blackoutFinal');
-        
-        const turnOnSound = document.getElementById('turnOnAudio');
-        const chimeSound = document.getElementById('frameChime');
-        const birthdayMusic = document.getElementById('birthdaySong');
-        const blowSound = document.getElementById('blowAudioEffect');
-        
-        let countdownFinished = false;
-        let countdownInterval = null;
-        let timeLeft = 80;
-        let musicStarted = false;
-        let cakeForward = false;
-        let sequenceStarted = false;
-        function createSparkleBurst(x, y) {
-    const count = 80;
+    <script>
+        (function() {
+            // DOM elements
+            const blackScreen = document.getElementById('blackScreen');
+            const container = document.getElementById('celebrationContainer');
+            const threadLine = document.getElementById('threadLine');
+            const bunting = document.getElementById('bunting');
+            const cakeWrapper = document.getElementById('cakeWrapper');
+            const countdownPanel = document.getElementById('countdownPanel');
+            const timerSpan = document.getElementById('timer');
+            const flame = document.getElementById('flameOnly');
+            const messageCard = document.getElementById('messageCard');
+            const messageTextDiv = document.getElementById('messageText');
+            const foldSphere = document.getElementById('foldSphere');
+            const blackoutFinal = document.getElementById('blackoutFinal');
 
-    for (let i = 0; i < count; i++) {
-        const sparkle = document.createElement("div");
-        sparkle.className = "sparkle";
+            const turnOnSound = document.getElementById('turnOnAudio');
+            const chimeSound = document.getElementById('frameChime');
+            const birthdayMusic = document.getElementById('birthdaySong');
+            const blowSound = document.getElementById('blowAudioEffect');
 
-        const angle = Math.random() * Math.PI * 2;
-        const distance = 50 + Math.random() * 300;
+            let countdownFinished = false;
+            let countdownInterval = null;
+            let timeLeft = 10; // <--- timer set to 10 seconds
+            let sequenceStarted = false;
 
-        const dx = Math.cos(angle) * distance;
-        const dy = Math.sin(angle) * distance;
-
-        sparkle.style.left = x + "px";
-        sparkle.style.top = y + "px";
-        sparkle.style.setProperty("--dx", dx + "px");
-        sparkle.style.setProperty("--dy", dy + "px");
-
-        document.body.appendChild(sparkle);
-
-        setTimeout(() => sparkle.remove(), 1200);
-    }
-}
-        
-        // Fireworks burst (visual only)
-        function createFireworksBurst(x, y) {
-            const particles = 40;
-            for (let i = 0; i < particles; i++) {
-                const angle = Math.random() * Math.PI * 2;
-                const distance = 80 + Math.random() * 200;
-                const dx = Math.cos(angle) * distance;
-                const dy = Math.sin(angle) * distance;
-                const firework = document.createElement('div');
-                firework.className = 'firecracker';
-                firework.style.left = x + 'px';
-                firework.style.top = y + 'px';
-                firework.style.setProperty('--dx', dx + 'px');
-                firework.style.setProperty('--dy', dy + 'px');
-                firework.style.background = `radial-gradient(circle, 
-                    hsl(${Math.random() * 360}, 100%, 60%), 
-                    gold)`;
-                firework.style.width = '6px';
-                firework.style.height = '6px';
-                document.body.appendChild(firework);
-                setTimeout(() => firework.remove(), 1200);
-            }
-        }
-        
-        function createSmokeAndFireworks() {
-            const cakeRect = document.getElementById('cakeImage').getBoundingClientRect();
-            const centerX = cakeRect.left + cakeRect.width / 2;
-            const centerY = cakeRect.top + cakeRect.height * 0.2;
-            for (let i = 0; i < 6; i++) {
-                setTimeout(() => {
-                    const x = centerX + (Math.random() - 0.5) * 120;
-                    const y = centerY + (Math.random() - 0.5) * 80;
-                    createFireworksBurst(x, y);
-                }, i * 150);
-            }
-        }
-        
-        function launchRocketEmojis() {
-            const rocketCount = 30;
-            for (let i = 0; i < rocketCount; i++) {
-                const startX = Math.random() * window.innerWidth;
-                const startY = Math.random() * window.innerHeight;
-                const angle = Math.random() * Math.PI * 2;
-                const distance = 150 + Math.random() * 400;
-                const dx = Math.cos(angle) * distance;
-                const dy = Math.sin(angle) * distance;
-                const rocket = document.createElement('div');
-                rocket.className = 'rocket-emoji';
-                rocket.textContent = '🚀';
-                rocket.style.left = startX + 'px';
-                rocket.style.top = startY + 'px';
-                rocket.style.setProperty('--dx', dx + 'px');
-                rocket.style.setProperty('--dy', dy + 'px');
-                document.body.appendChild(rocket);
-                setTimeout(() => {
-                    if (rocket.parentNode) rocket.remove();
-                    const endX = startX + dx;
-                    const endY = startY + dy;
-                    const explosion = document.createElement('div');
-                    explosion.className = 'rocket-explosion';
-                    explosion.style.left = endX + 'px';
-                    explosion.style.top = endY + 'px';
-                    document.body.appendChild(explosion);
-                    setTimeout(() => explosion.remove(), 600);
-                    for (let p = 0; p < 20; p++) {
-                        const part = document.createElement('div');
-                        part.className = 'firecracker';
-                        const pAngle = Math.random() * Math.PI * 2;
-                        const pDist = 30 + Math.random() * 80;
-                        const pdx = Math.cos(pAngle) * pDist;
-                        const pdy = Math.sin(pAngle) * pDist;
-                        part.style.left = endX + 'px';
-                        part.style.top = endY + 'px';
-                        part.style.setProperty('--dx', pdx + 'px');
-                        part.style.setProperty('--dy', pdy + 'px');
-                        part.style.background = `radial-gradient(circle, hsl(${Math.random() * 360}, 100%, 65%), gold)`;
-                        part.style.width = '6px';
-                        part.style.height = '6px';
-                        document.body.appendChild(part);
-                        setTimeout(() => part.remove(), 1000);
-                    }
-                }, 1200);
-                setTimeout(() => { if (rocket.parentNode) rocket.remove(); }, 1500);
-            }
-        }
-        
-        function extinguishFlame() {
-            if (flame) {
-                flame.style.animation = 'none';
-                flame.style.transition = 'opacity 0.3s';
-                flame.style.opacity = '0';
-            }
-        }
-        
-        // Card: pop out, show "Happy Birthday", tilt, then type remaining message
-       function showCardWithMessage() {
-    // Step 1: show card with pop animation
-    messageCard.style.display = 'block';
-
-    setTimeout(() => {
-        messageCard.style.transform = "translate(-50%, -50%) scale(1)";
-    }, 50);
-
-    // Step 2: after 1.5 sec flip card
-    setTimeout(() => {
-        messageCard.classList.add("flipped");
-    }, 1500);
-
-    // Step 3: start typing AFTER flip (on back side)
-    setTimeout(() => {
-        const fullMessage =
-            "Dear abcxyz,may god bless you and make\n this day the happiest day\n ever. I hope this year brings you a lot of happiness and success.May all your dreams come true.";
-
-        messageTextDiv.innerHTML = "";
-        let index = 0;
-
-        function typeChar() {
-            if (index < fullMessage.length) {
-                let ch = fullMessage[index];
-                if (ch === '\n') ch = "<br>";
-                messageTextDiv.insertAdjacentHTML("beforeend", ch);
-                index++;
-                setTimeout(typeChar, ch === "<br>" ? 200 : 60);
-            } else {
-                setTimeout(() => {
-                    startFoldingAnimation();
-                }, 2000);
-            }
-        }
-
-        typeChar();
-    }, 2600);
-}
-        
-   function startFoldingAnimation() {
-
-    messageCard.classList.add("exit");
-
-    setTimeout(() => {
-        messageCard.style.display = "none";
-        document.body.classList.add("shutter-close");
-        
-        // Redirect after the shutter fully closes (animation duration 0.9s + small delay)
-        setTimeout(() => {
-            window.location.href = "msg.html";
-        }, 1000);
-    }, 2800);
-
-}  function onTimerEnd() {
-            
-            if (countdownFinished) return;
-            countdownFinished = true;
-            if (countdownInterval) clearInterval(countdownInterval);
-            if (birthdayMusic) {
-                birthdayMusic.pause();
-                birthdayMusic.currentTime = 0;
-            }
-            // Play only blow sound
-            if (blowSound) {
-                blowSound.currentTime = 0;
-                blowSound.play().catch(e=>console.log);
-            }
-            // Visual effects only
-            const cakeRect = document.getElementById('cakeImage').getBoundingClientRect();
-const centerX = cakeRect.left + cakeRect.width / 2;
-const centerY = cakeRect.top + cakeRect.height / 2;
-
-createSparkleBurst(centerX, centerY);
-            extinguishFlame();
-            createSmokeAndFireworks();
-            launchRocketEmojis();
-            setTimeout(() => {
-                showCardWithMessage();
-            }, 1500);
-        }
-        
-        function updateTimerDisplay() {
-            const mins = Math.floor(timeLeft / 60);
-            const secs = timeLeft % 60;
-            timerSpan.innerText = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
-        }
-        
-        function startCountdown() {
-            if (countdownInterval) clearInterval(countdownInterval);
-            timeLeft = 80;
-            updateTimerDisplay();
-            countdownInterval = setInterval(() => {
-                if (countdownFinished) return;
-                if (timeLeft <= 1) {
-                    clearInterval(countdownInterval);
-                    countdownInterval = null;
-                    timerSpan.innerText = "00:00";
-                    onTimerEnd();
-                } else {
-                    timeLeft--;
-                    updateTimerDisplay();
+            function createSparkleBurst(x, y) {
+                const count = 80;
+                for (let i = 0; i < count; i++) {
+                    const sparkle = document.createElement("div");
+                    sparkle.className = "sparkle";
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = 50 + Math.random() * 300;
+                    const dx = Math.cos(angle) * distance;
+                    const dy = Math.sin(angle) * distance;
+                    sparkle.style.left = x + "px";
+                    sparkle.style.top = y + "px";
+                    sparkle.style.setProperty("--dx", dx + "px");
+                    sparkle.style.setProperty("--dy", dy + "px");
+                    document.body.appendChild(sparkle);
+                    setTimeout(() => sparkle.remove(), 1200);
                 }
-            }, 1000);
-        }
-        
-        function moveCakeForward() {
-            if (cakeForward) return;
-            cakeForward = true;
-            cakeWrapper.classList.add('forward');
-        }
-        
-function startCelebration() {
-            if (sequenceStarted) return;
-            sequenceStarted = true;
-            
+            }
+
+            function createFireworksBurst(x, y) {
+                const particles = 40;
+                for (let i = 0; i < particles; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = 80 + Math.random() * 200;
+                    const dx = Math.cos(angle) * distance;
+                    const dy = Math.sin(angle) * distance;
+                    const firework = document.createElement('div');
+                    firework.className = 'firecracker';
+                    firework.style.left = x + 'px';
+                    firework.style.top = y + 'px';
+                    firework.style.setProperty('--dx', dx + 'px');
+                    firework.style.setProperty('--dy', dy + 'px');
+                    firework.style.background = `radial-gradient(circle, 
+                        hsl(${Math.random() * 360}, 100%, 60%), 
+                        gold)`;
+                    firework.style.width = '6px';
+                    firework.style.height = '6px';
+                    document.body.appendChild(firework);
+                    setTimeout(() => firework.remove(), 1200);
+                }
+            }
+
+            function createSmokeAndFireworks() {
+                const cakeRect = document.getElementById('cakeImage').getBoundingClientRect();
+                const centerX = cakeRect.left + cakeRect.width / 2;
+                const centerY = cakeRect.top + cakeRect.height * 0.2;
+                for (let i = 0; i < 6; i++) {
+                    setTimeout(() => {
+                        const x = centerX + (Math.random() - 0.5) * 120;
+                        const y = centerY + (Math.random() - 0.5) * 80;
+                        createFireworksBurst(x, y);
+                    }, i * 150);
+                }
+            }
+
+            function launchRocketEmojis() {
+                const rocketCount = 30;
+                for (let i = 0; i < rocketCount; i++) {
+                    const startX = Math.random() * window.innerWidth;
+                    const startY = Math.random() * window.innerHeight;
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = 150 + Math.random() * 400;
+                    const dx = Math.cos(angle) * distance;
+                    const dy = Math.sin(angle) * distance;
+                    const rocket = document.createElement('div');
+                    rocket.className = 'rocket-emoji';
+                    rocket.textContent = '🚀';
+                    rocket.style.left = startX + 'px';
+                    rocket.style.top = startY + 'px';
+                    rocket.style.setProperty('--dx', dx + 'px');
+                    rocket.style.setProperty('--dy', dy + 'px');
+                    document.body.appendChild(rocket);
+                    setTimeout(() => {
+                        if (rocket.parentNode) rocket.remove();
+                        const endX = startX + dx;
+                        const endY = startY + dy;
+                        const explosion = document.createElement('div');
+                        explosion.className = 'rocket-explosion';
+                        explosion.style.left = endX + 'px';
+                        explosion.style.top = endY + 'px';
+                        document.body.appendChild(explosion);
+                        setTimeout(() => explosion.remove(), 600);
+                        for (let p = 0; p < 20; p++) {
+                            const part = document.createElement('div');
+                            part.className = 'firecracker';
+                            const pAngle = Math.random() * Math.PI * 2;
+                            const pDist = 30 + Math.random() * 80;
+                            const pdx = Math.cos(pAngle) * pDist;
+                            const pdy = Math.sin(pAngle) * pDist;
+                            part.style.left = endX + 'px';
+                            part.style.top = endY + 'px';
+                            part.style.setProperty('--dx', pdx + 'px');
+                            part.style.setProperty('--dy', pdy + 'px');
+                            part.style.background =
+                                `radial-gradient(circle, hsl(${Math.random() * 360}, 100%, 65%), gold)`;
+                            part.style.width = '6px';
+                            part.style.height = '6px';
+                            document.body.appendChild(part);
+                            setTimeout(() => part.remove(), 1000);
+                        }
+                    }, 1200);
+                    setTimeout(() => { if (rocket.parentNode) rocket.remove(); }, 1500);
+                }
+            }
+
+            function extinguishFlame() {
+                if (flame) {
+                    flame.style.animation = 'none';
+                    flame.style.transition = 'opacity 0.3s';
+                    flame.style.opacity = '0';
+                }
+            }
+
+            function showCardWithMessage() {
+                messageCard.style.display = 'block';
+                setTimeout(() => {
+                    messageCard.style.transform = "translate(-50%, -50%) scale(1)";
+                }, 50);
+                setTimeout(() => {
+                    messageCard.classList.add("flipped");
+                }, 1500);
+                setTimeout(() => {
+                    const fullMessage =
+                        "Dear abcxyz,may god bless you and make\n this day the happiest day\n ever. I hope this year brings you a lot of happiness and success.May all your dreams come true.";
+                    messageTextDiv.innerHTML = "";
+                    let index = 0;
+
+                    function typeChar() {
+                        if (index < fullMessage.length) {
+                            let ch = fullMessage[index];
+                            if (ch === '\n') ch = "<br>";
+                            messageTextDiv.insertAdjacentHTML("beforeend", ch);
+                            index++;
+                            setTimeout(typeChar, ch === "<br>" ? 200 : 60);
+                        } else {
+                            setTimeout(() => {
+                                startFoldingAnimation();
+                            }, 2000);
+                        }
+                    }
+                    typeChar();
+                }, 2600);
+            }
+
+            function startFoldingAnimation() {
+                messageCard.classList.add("exit");
+                setTimeout(() => {
+                    messageCard.style.display = "none";
+                    document.body.classList.add("shutter-close");
+                    setTimeout(() => {
+                        window.location.href = "msg.html";
+                    }, 1000);
+                }, 2800);
+            }
+
+            function onTimerEnd() {
+                if (countdownFinished) return;
+                countdownFinished = true;
+                if (countdownInterval) clearInterval(countdownInterval);
+                if (birthdayMusic) {
+                    birthdayMusic.pause();
+                    birthdayMusic.currentTime = 0;
+                }
+                if (blowSound) {
+                    blowSound.currentTime = 0;
+                    blowSound.play().catch(e => console.log);
+                }
+                const cakeRect = document.getElementById('cakeImage').getBoundingClientRect();
+                const centerX = cakeRect.left + cakeRect.width / 2;
+                const centerY = cakeRect.top + cakeRect.height / 2;
+                createSparkleBurst(centerX, centerY);
+                extinguishFlame();
+                createSmokeAndFireworks();
+                launchRocketEmojis();
+                setTimeout(() => {
+                    showCardWithMessage();
+                }, 1500);
+            }
+
+            function updateTimerDisplay() {
+                const mins = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+                timerSpan.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+
+            function startCountdown() {
+                if (countdownInterval) clearInterval(countdownInterval);
+                timeLeft = 10; // reset to 10
+                updateTimerDisplay();
+                countdownInterval = setInterval(() => {
+                    if (countdownFinished) return;
+                    if (timeLeft <= 1) {
+                        clearInterval(countdownInterval);
+                        countdownInterval = null;
+                        timerSpan.innerText = "00:00";
+                        onTimerEnd();
+                    } else {
+                        timeLeft--;
+                        updateTimerDisplay();
+                    }
+                }, 1000);
+            }
+
+            function moveCakeForward() {
+                if (cakeWrapper.classList.contains('forward')) return;
+                cakeWrapper.classList.add('forward');
+            }
+
             function playAudio(audioElem, fallbackBeep = false) {
                 if (!audioElem) return;
                 audioElem.currentTime = 0;
@@ -1008,59 +1047,73 @@ function startCelebration() {
                 if (playPromise && fallbackBeep) {
                     playPromise.catch(() => {
                         try {
-                            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                            const ctx = new(window.AudioContext || window.webkitAudioContext)();
                             const osc = ctx.createOscillator();
                             osc.frequency.value = 440;
                             osc.connect(ctx.destination);
                             osc.start();
                             setTimeout(() => osc.stop(), 200);
-                        } catch(e){}
+                        } catch (e) {}
                     });
                 }
             }
 
-            if (blackScreen) {
-                blackScreen.classList.add('hide');
-            }
-            if (turnOnSound) {
-                playAudio(turnOnSound, true);
-            }
-            
-            setTimeout(() => {
-                if (container) container.classList.add('visible');
-                if (threadLine) threadLine.classList.add('show');
-                if (bunting) bunting.classList.add('show');
-            }, 500);
+            function startCelebration() {
+                if (sequenceStarted) return;
+                sequenceStarted = true;
 
-            setTimeout(() => {
-                if (cakeWrapper) cakeWrapper.classList.add('show');
-            }, 1200);
-
-            setTimeout(() => {
-                if (countdownPanel) countdownPanel.classList.add('show');
-                startCountdown();
+                // 🎵 0ms: turn‑on sound AND birthday song start together at "start"
+                if (turnOnSound) {
+                    playAudio(turnOnSound, true);
+                }
                 if (birthdayMusic) {
                     birthdayMusic.loop = true;
                     playAudio(birthdayMusic, true);
                 }
-            }, 2000);
+                if (blackScreen) {
+                    blackScreen.classList.add('hide');
+                }
 
-            setTimeout(() => {
-                moveCakeForward();
-            }, 4000);
-        }
-        
-        
-        setTimeout(startCelebration, 2000);
-        
-        const cakePreload = new Image();
-        cakePreload.src = "cake.png";
-        
-        turnOnSound.load();
-        chimeSound.load();
-        birthdayMusic.load();
-        blowSound.load();
-    })();
-</script>
+                // 500ms: container & thread line appear (visuals only)
+                setTimeout(() => {
+                    if (container) container.classList.add('visible');
+                    if (threadLine) threadLine.classList.add('show');
+                }, 500);
+
+                // 700ms: cake appears (reduced)
+                setTimeout(() => {
+                    if (cakeWrapper) cakeWrapper.classList.add('show');
+                }, 700);
+
+                // 1200ms: happy birthday letters appear with pop
+                setTimeout(() => {
+                    if (bunting) bunting.classList.add('show');
+                }, 1200);
+
+                // 2000ms: countdown starts (now 10 seconds)
+                setTimeout(() => {
+                    if (countdownPanel) countdownPanel.classList.add('show');
+                    startCountdown();
+                }, 2000);
+
+                // 4000ms: cake moves forward
+                setTimeout(() => {
+                    moveCakeForward();
+                }, 4000);
+            }
+
+            // Preload assets
+            const cakePreload = new Image();
+            cakePreload.src = "cake.png";
+
+            turnOnSound.load();
+            chimeSound.load();
+            birthdayMusic.load();
+            blowSound.load();
+
+            // Start the sequence after 2s initial pause
+            setTimeout(startCelebration, 2000);
+        })();
+    </script>
 </body>
 </html>
