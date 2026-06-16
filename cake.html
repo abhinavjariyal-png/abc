@@ -89,7 +89,6 @@
             gap: 6px;
         }
 
-        /* LETTER CARDS – base style, hidden until parent gets .show */
         .bunting .letter-card {
             background: #fff9ef;
             width: 52px;
@@ -107,7 +106,6 @@
             border-bottom: 3px solid #ffb347;
             position: relative;
             opacity: 0;
-            /* animation will be triggered by .bunting.show */
         }
 
         .bunting .letter-card::before {
@@ -120,7 +118,6 @@
             color: #d4a373;
         }
 
-        /* POPPING ANIMATION – triggered when .bunting.show is active */
         @keyframes popLetter {
             0% {
                 transform: scale(0) rotate(-8deg);
@@ -140,7 +137,6 @@
             animation: popLetter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
 
-        /* Staggered delays per letter – works for both rows consistently */
         .bunting.show .letter-card:nth-child(1) {
             animation-delay: 0.05s;
         }
@@ -186,32 +182,136 @@
             opacity: 0.6;
         }
 
-        .countdown-panel {
+        /* BLOW BUTTON – position moved down */
+        .blow-button-wrapper {
             position: fixed;
-            top: 160px;
+            top: 200px;
+            /* increased from 160px */
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(14px);
-            padding: 10px 28px;
-            border-radius: 60px;
-            color: #ffefc0;
-            font-family: 'Courier New', monospace;
-            font-size: 1.7rem;
-            font-weight: bold;
-            letter-spacing: 2px;
             z-index: 100;
-            border: 1px solid #ffcc99;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            white-space: nowrap;
             display: none;
-            text-align: center;
         }
 
-        .countdown-panel.show {
+        .blow-button-wrapper.show {
             display: block;
         }
 
+        .blow-button {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            padding: 12px 34px;
+            border-radius: 60px;
+            border: 1px solid #ffcc99;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 30px rgba(255, 200, 100, 0.08);
+            cursor: pointer;
+            font-family: 'Playfair Display', 'Segoe UI', serif;
+            font-size: 1.7rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: #ffefc0;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: transform 0.25s cubic-bezier(0.34, 1.2, 0.64, 1),
+                box-shadow 0.3s ease,
+                background 0.3s ease,
+                border-color 0.3s ease;
+            white-space: nowrap;
+            position: relative;
+            overflow: visible;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .blow-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3), 0 0 50px rgba(255, 200, 100, 0.15);
+            border-color: #ffd700;
+            background: rgba(20, 15, 10, 0.7);
+        }
+
+        .blow-button:active {
+            transform: scale(0.93);
+        }
+
+        .blow-button .candle-icon {
+            display: inline-block;
+            font-size: 2rem;
+            line-height: 1;
+            filter: drop-shadow(0 0 6px rgba(255, 180, 50, 0.4));
+            transition: transform 0.3s ease;
+        }
+
+        .blow-button:hover .candle-icon {
+            transform: scale(1.1) rotate(-4deg);
+        }
+
+        .blow-button .flame-glow {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, rgba(255, 200, 100, 0.25), transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        .blow-button:hover .flame-glow {
+            opacity: 1;
+        }
+
+        .blow-button .blow-text {
+            position: relative;
+            z-index: 2;
+        }
+
+        .blow-button .blow-sub {
+            font-size: 0.6rem;
+            font-weight: 400;
+            opacity: 0.6;
+            letter-spacing: 2px;
+            margin-left: 4px;
+        }
+
+        /* pressed/disabled state */
+        .blow-button.pressed {
+            transform: scale(0.92);
+            opacity: 0.4;
+            pointer-events: none;
+            border-color: #888;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, opacity 0.5s ease;
+        }
+
+        .blow-button.pressed .candle-icon {
+            animation: flameOut 0.5s ease forwards;
+        }
+
+        @keyframes flameOut {
+            0% {
+                transform: scale(1) rotate(0deg);
+                filter: drop-shadow(0 0 20px rgba(255, 180, 50, 0.8));
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.3) rotate(10deg);
+                filter: drop-shadow(0 0 40px rgba(255, 100, 0, 0.6));
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(0.5) rotate(-20deg);
+                filter: drop-shadow(0 0 0px transparent);
+                opacity: 0.2;
+            }
+        }
+
+        /* cake */
         .cake-wrapper {
             position: fixed;
             left: 50%;
@@ -261,6 +361,7 @@
             z-index: 30;
             pointer-events: none;
             margin-bottom: -8px;
+            transition: opacity 0.4s ease;
         }
 
         .flame-only::before {
@@ -290,6 +391,7 @@
             }
         }
 
+        /* particles */
         .firecracker {
             position: fixed;
             width: 8px;
@@ -675,6 +777,7 @@
             transform: scaleY(1);
         }
 
+        /* responsive – button position adjusted down */
         @media (max-width: 850px) {
             .cake-img {
                 width: 600px;
@@ -684,6 +787,18 @@
                 max-width: 60px;
                 min-width: 28px;
                 margin-bottom: -6px;
+            }
+            .blow-button {
+                font-size: 1.4rem;
+                padding: 10px 26px;
+                gap: 10px;
+            }
+            .blow-button .candle-icon {
+                font-size: 1.6rem;
+            }
+            .blow-button-wrapper {
+                top: 180px;
+                /* was 140px */
             }
         }
 
@@ -697,10 +812,17 @@
                 min-width: 24px;
                 margin-bottom: -5px;
             }
-            .countdown-panel {
-                top: 140px;
-                font-size: 1.3rem;
-                padding: 6px 20px;
+            .blow-button {
+                font-size: 1.2rem;
+                padding: 8px 20px;
+                gap: 8px;
+            }
+            .blow-button .candle-icon {
+                font-size: 1.4rem;
+            }
+            .blow-button-wrapper {
+                top: 160px;
+                /* was 120px */
             }
             .bunting .letter-card {
                 width: 40px;
@@ -725,10 +847,18 @@
                 min-width: 20px;
                 margin-bottom: -4px;
             }
-            .countdown-panel {
-                top: 120px;
-                font-size: 1.1rem;
-                padding: 5px 16px;
+            .blow-button {
+                font-size: 1rem;
+                padding: 6px 16px;
+                gap: 6px;
+                border-radius: 40px;
+            }
+            .blow-button .candle-icon {
+                font-size: 1.2rem;
+            }
+            .blow-button-wrapper {
+                top: 140px;
+                /* was 100px */
             }
             .bunting .letter-card {
                 width: 32px;
@@ -769,8 +899,13 @@
             </div>
         </div>
 
-        <div class="countdown-panel" id="countdownPanel">
-            Blow🕯️in <span id="timer">00:10</span>
+        <!-- BLOW BUTTON – wrapper position adjusted -->
+        <div class="blow-button-wrapper" id="blowButtonWrapper">
+            <button class="blow-button" id="blowButton">
+                <span class="flame-glow"></span>
+                <span class="candle-icon">🕯️</span>
+                <span class="blow-text">Blow Candle <span class="blow-sub">✨</span></span>
+            </button>
         </div>
 
         <div class="cake-wrapper" id="cakeWrapper">
@@ -797,9 +932,6 @@
     <audio id="turnOnAudio" preload="auto">
         <source src="turnon.mp3" type="audio/mpeg" />
     </audio>
-    <audio id="frameChime" preload="auto">
-        <source src="chime.mp3" type="audio/mpeg" />
-    </audio>
     <audio id="birthdaySong" preload="auto">
         <source src="birthday2sound.mp3" type="audio/mpeg" />
     </audio>
@@ -809,14 +941,14 @@
 
     <script>
         (function() {
-            // DOM elements
+            // DOM
             const blackScreen = document.getElementById('blackScreen');
             const container = document.getElementById('celebrationContainer');
             const threadLine = document.getElementById('threadLine');
             const bunting = document.getElementById('bunting');
             const cakeWrapper = document.getElementById('cakeWrapper');
-            const countdownPanel = document.getElementById('countdownPanel');
-            const timerSpan = document.getElementById('timer');
+            const blowWrapper = document.getElementById('blowButtonWrapper');
+            const blowBtn = document.getElementById('blowButton');
             const flame = document.getElementById('flameOnly');
             const messageCard = document.getElementById('messageCard');
             const messageTextDiv = document.getElementById('messageText');
@@ -824,15 +956,12 @@
             const blackoutFinal = document.getElementById('blackoutFinal');
 
             const turnOnSound = document.getElementById('turnOnAudio');
-            const chimeSound = document.getElementById('frameChime');
             const birthdayMusic = document.getElementById('birthdaySong');
             const blowSound = document.getElementById('blowAudioEffect');
 
-            let countdownFinished = false;
-            let countdownInterval = null;
-            let timeLeft = 10; // <--- timer set to 10 seconds
-            let sequenceStarted = false;
+            let celebrationTriggered = false;
 
+            // --- effects ---
             function createSparkleBurst(x, y) {
                 const count = 80;
                 for (let i = 0; i < count; i++) {
@@ -955,7 +1084,7 @@
                 }, 1500);
                 setTimeout(() => {
                     const fullMessage =
-                        "Dear abcxyz,may god bless you and make\n this day the happiest day\n ever. I hope this year brings you a lot of happiness and success.May all your dreams come true.";
+                        "Dear abcxyz,\nmay god bless you and make\nthis day the happiest day\never. I hope this year brings you\na lot of happiness and success.\nMay all your dreams come true.";
                     messageTextDiv.innerHTML = "";
                     let index = 0;
 
@@ -987,18 +1116,27 @@
                 }, 2800);
             }
 
-            function onTimerEnd() {
-                if (countdownFinished) return;
-                countdownFinished = true;
-                if (countdownInterval) clearInterval(countdownInterval);
+            // --- MAIN TRIGGER: called when user blows the candle ---
+            function triggerCelebration() {
+                if (celebrationTriggered) return;
+                celebrationTriggered = true;
+
+                // 1. Stop the birthday music immediately
                 if (birthdayMusic) {
                     birthdayMusic.pause();
                     birthdayMusic.currentTime = 0;
                 }
+
+                // 2. Play blow sound
                 if (blowSound) {
                     blowSound.currentTime = 0;
-                    blowSound.play().catch(e => console.log);
+                    blowSound.play().catch(() => {});
                 }
+
+                // 3. Disable / visual feedback on button
+                blowBtn.classList.add('pressed');
+
+                // 4. Effects
                 const cakeRect = document.getElementById('cakeImage').getBoundingClientRect();
                 const centerX = cakeRect.left + cakeRect.width / 2;
                 const centerY = cakeRect.top + cakeRect.height / 2;
@@ -1006,113 +1144,78 @@
                 extinguishFlame();
                 createSmokeAndFireworks();
                 launchRocketEmojis();
+
+                // 5. Show message card after a short delay
                 setTimeout(() => {
                     showCardWithMessage();
                 }, 1500);
             }
 
-            function updateTimerDisplay() {
-                const mins = Math.floor(timeLeft / 60);
-                const secs = timeLeft % 60;
-                timerSpan.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-            }
+            // --- button click ---
+            blowBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                triggerCelebration();
+            });
 
-            function startCountdown() {
-                if (countdownInterval) clearInterval(countdownInterval);
-                timeLeft = 10; // reset to 10
-                updateTimerDisplay();
-                countdownInterval = setInterval(() => {
-                    if (countdownFinished) return;
-                    if (timeLeft <= 1) {
-                        clearInterval(countdownInterval);
-                        countdownInterval = null;
-                        timerSpan.innerText = "00:00";
-                        onTimerEnd();
-                    } else {
-                        timeLeft--;
-                        updateTimerDisplay();
-                    }
-                }, 1000);
-            }
+            // also support touch devices
+            blowBtn.addEventListener('touchstart', function(e) {
+                // prevent double-firing on mobile
+            }, { passive: true });
 
-            function moveCakeForward() {
-                if (cakeWrapper.classList.contains('forward')) return;
-                cakeWrapper.classList.add('forward');
-            }
-
-            function playAudio(audioElem, fallbackBeep = false) {
-                if (!audioElem) return;
-                audioElem.currentTime = 0;
-                const playPromise = audioElem.play();
-                if (playPromise && fallbackBeep) {
-                    playPromise.catch(() => {
-                        try {
-                            const ctx = new(window.AudioContext || window.webkitAudioContext)();
-                            const osc = ctx.createOscillator();
-                            osc.frequency.value = 440;
-                            osc.connect(ctx.destination);
-                            osc.start();
-                            setTimeout(() => osc.stop(), 200);
-                        } catch (e) {}
-                    });
-                }
-            }
-
+            // --- sequence starter (like original, but without timer) ---
             function startCelebration() {
-                if (sequenceStarted) return;
-                sequenceStarted = true;
-
-                // 🎵 0ms: turn‑on sound AND birthday song start together at "start"
+                // turn‑on sound
                 if (turnOnSound) {
-                    playAudio(turnOnSound, true);
+                    turnOnSound.currentTime = 0;
+                    turnOnSound.play().catch(() => {});
                 }
+                // birthday music starts
                 if (birthdayMusic) {
                     birthdayMusic.loop = true;
-                    playAudio(birthdayMusic, true);
-                }
-                if (blackScreen) {
-                    blackScreen.classList.add('hide');
+                    birthdayMusic.currentTime = 0;
+                    birthdayMusic.play().catch(() => {});
                 }
 
-                // 500ms: container & thread line appear (visuals only)
+                if (blackScreen) blackScreen.classList.add('hide');
+
+                // 500ms: container & thread line
                 setTimeout(() => {
                     if (container) container.classList.add('visible');
                     if (threadLine) threadLine.classList.add('show');
                 }, 500);
 
-                // 700ms: cake appears (reduced)
+                // 700ms: cake appears
                 setTimeout(() => {
                     if (cakeWrapper) cakeWrapper.classList.add('show');
                 }, 700);
 
-                // 1200ms: happy birthday letters appear with pop
+                // 1200ms: bunting letters pop
                 setTimeout(() => {
                     if (bunting) bunting.classList.add('show');
                 }, 1200);
 
-                // 2000ms: countdown starts (now 10 seconds)
+                // 2000ms: blow button appears (replaces countdown)
                 setTimeout(() => {
-                    if (countdownPanel) countdownPanel.classList.add('show');
-                    startCountdown();
+                    if (blowWrapper) blowWrapper.classList.add('show');
                 }, 2000);
 
                 // 4000ms: cake moves forward
                 setTimeout(() => {
-                    moveCakeForward();
+                    if (cakeWrapper) cakeWrapper.classList.add('forward');
                 }, 4000);
             }
 
-            // Preload assets
+            // preload assets
             const cakePreload = new Image();
             cakePreload.src = "cake.png";
 
             turnOnSound.load();
-            chimeSound.load();
             birthdayMusic.load();
             blowSound.load();
 
-            // Start the sequence after 2s initial pause
+            // start the whole thing after 2s pause
             setTimeout(startCelebration, 2000);
+
         })();
     </script>
 </body>
